@@ -44,12 +44,18 @@ jobs:
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
 
-      - name: Core only (no default features)
-        run: cargo check --no-default-features --all-targets
+      # Library only: bin and examples require the `std` feature.
+      - name: Core only (lib)
+        run: cargo check --no-default-features --lib
 
-      - name: Alloc without std
-        run: cargo check --no-default-features --features alloc --all-targets
+      - name: Alloc without std (lib)
+        run: cargo check --no-default-features --features alloc --lib
 
-      - name: Clippy core-only
-        run: cargo clippy --no-default-features --all-targets -- -D warnings
+      - name: Clippy core-only (lib)
+        run: cargo clippy --no-default-features --lib -- -D warnings
+
+      - name: Clippy alloc-only (lib)
+        run: cargo clippy --no-default-features --features alloc --lib -- -D warnings
