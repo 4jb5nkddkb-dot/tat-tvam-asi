@@ -8,7 +8,7 @@ license = "MIT"
 repository = "https://github.com/4jb5nkddkb-dot/tat-tvam-asi"
 readme = "README.md"
 keywords = ["rust", "sanskrit", "zero-cost", "ownership", "philosophy"]
-categories = ["rust-patterns", "no-std"]
+categories = ["rust-patterns"]
 
 [dependencies]
 
