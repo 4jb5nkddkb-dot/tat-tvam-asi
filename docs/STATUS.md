@@ -3,25 +3,29 @@
 **Version**: 0.1.0+  
 **Branch**: main
 
-## Latest
+## Latest (practical turn)
 
 | Item | Status |
 |------|--------|
-| `typed_process` / `typed_vision` / `typed_law` | Landed |
-| `examples/command_pipeline` | Demonstrates all three type-state surfaces |
-| `STYLE_GUIDE` | Type-state vs runtime selection criteria |
-| CI no_std job | Active |
+| `config` library module | `parse_config`, closed keys, owned `Config` |
+| `command` library module | `parse_command`, `Store`, closed `Command`/`Response` |
+| Examples | Thin wrappers over library APIs |
+| `benches/sacred_map` | Criterion: SacredMap vs std `map` |
+| Type-state core | Unchanged and still primary constraint layer |
 
-## Type-state coverage
+## Run
 
-- Process pipeline → `TypedProcess`
-- Cosmic cycle → `Cosmic`
-- Resource lifecycle → `TypedResource` (alloc)
+```bash
+cargo test
+cargo run --example config_loop
+cargo run --example command_pipeline
+cargo bench --bench sacred_map
+```
 
 ## Honest limits
 
-- `exhaustive!` is still a thin helper.
+- Bench shows *intent* (should be in the same ballpark); not a formal proof of identical codegen.
+- `exhaustive!` remains thin.
 - Phonology remains a PoC.
-- Runtime twins kept intentionally for demos and logging.
 
 Tat Tvam Asi.
