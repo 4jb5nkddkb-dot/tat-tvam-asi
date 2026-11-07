@@ -1,1 +1,5 @@
-cognitive-complexity-threshold = 25
+cognitive-complexity-threshold = 20
+
+# Prefer explicit handling over panic shortcuts in this crate's philosophy
+allow-expect-in-tests = true
+allow-unwrap-in-tests = true
