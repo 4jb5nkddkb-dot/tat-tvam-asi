@@ -1,6 +1,6 @@
 [package]
 name = "tat-tvam-asi"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Zhanying Jia <Dayan>"]
 description = "Rust × Sanskrit closed-loop system — Project Tat Tvam Asi (彼即汝)"
