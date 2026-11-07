@@ -13,8 +13,8 @@
 //!
 //! Features:
 //! - `std` (default): full library + binary
-//! - `alloc`: heap types without full std (`law`, `essence`)
-//! - neither: core-only (`vision`, `sunyata`, `process`, `typed_process`, `mantra`)
+//! - `alloc`: heap types without full std (`law`, `essence`, `typed_law`)
+//! - neither: core-only (`vision`, `sunyata`, `process`, `typed_process`, `typed_vision`, `mantra`)
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
@@ -49,6 +49,9 @@ pub mod law {
         }
     }
 }
+
+#[cfg(feature = "alloc")]
+pub mod typed_law;
 
 // ────────────────────────────────────────────────
 // 闭环二 · 本质变现闭环 — requires alloc (String)
@@ -383,6 +386,7 @@ pub mod mantra {
 
 pub mod process;
 pub mod typed_process;
+pub mod typed_vision;
 
 // ────────────────────────────────────────────────
 // Public Re-exports
@@ -392,6 +396,8 @@ pub mod typed_process;
 pub use essence::{Essence, Form, Moksha, Om};
 #[cfg(feature = "alloc")]
 pub use law::Resource;
+#[cfg(feature = "alloc")]
+pub use typed_law::TypedResource;
 
 pub use mantra::{
     classify, classify_name, Antastha, Classification, Ghosa, Phoneme, PhonemeClass, Prana,
@@ -402,6 +408,7 @@ pub use sunyata::{PhantomEssence, SacredIterator, SacredMap};
 pub use typed_process::{
     run_typed_pipeline, run_typed_pipeline_owned, PhaseState, TypedProcess,
 };
+pub use typed_vision::{run_cosmic_cycle, Cosmic, CosmicState};
 pub use vision::State;
 
 // ────────────────────────────────────────────────
@@ -422,6 +429,15 @@ mod tests {
         assert_eq!(data, alloc::vec![1, 2, 3]);
     }
 
+    #[cfg(feature = "alloc")]
+    #[test]
+    fn typed_resource_consume() {
+        let r = TypedResource::new(5, alloc::vec![1, 2]);
+        let (id, data) = r.consume();
+        assert_eq!(id, 5);
+        assert_eq!(data, alloc::vec![1, 2]);
+    }
+
     #[test]
     fn state_machine_is_exhaustive_and_terminates() {
         let mut s = State::Unborn;
@@ -432,6 +448,13 @@ mod tests {
             assert!(steps <= 3);
         }
         assert_eq!(s, State::Liberated);
+    }
+
+    #[test]
+    fn typed_cosmic_cycle() {
+        let end = run_cosmic_cycle();
+        assert!(end.is_final());
+        assert_eq!(end.as_state(), State::Liberated);
     }
 
     #[cfg(feature = "alloc")]
