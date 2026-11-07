@@ -1,14 +1,16 @@
-//! Command pipeline — a more realistic closed-loop example.
+//! Command pipeline — three type-state surfaces in one realistic flow.
 //!
-//! - Closed command set (Vision / exhaustive match)
-//! - Owned request → owned response (Law)
-//! - Type-state pipeline for the control path (stronger constraints)
+//! 1. `TypedResource` (Law)     — payload owned, consumed once
+//! 2. `TypedProcess`  (Process) — phase order enforced at compile time
+//! 3. `Cosmic`        (Vision)  — cosmic cycle mirrored for logging
 //!
 //! ```bash
 //! cargo run --example command_pipeline
 //! ```
 
-use tat_tvam_asi::typed_process::{run_typed_pipeline, TypedProcess};
+use tat_tvam_asi::{
+    run_cosmic_cycle, run_typed_pipeline, TypedProcess, TypedResource,
+};
 
 /// Inbound commands — closed universe.
 #[derive(Debug, Clone)]
@@ -19,20 +21,17 @@ enum Command {
     Stats,
 }
 
-/// Outbound effects / responses — also closed.
+/// Outbound responses — also closed.
 #[derive(Debug)]
 enum Response {
     Pong,
     Value(Option<String>),
     Ok,
-    Stats {
-        entries: usize,
-    },
+    Stats { entries: usize },
     #[allow(dead_code)]
     Error(&'static str),
 }
 
-/// Tiny owned store. No shared mutability across tasks.
 struct Store {
     map: std::collections::BTreeMap<String, String>,
 }
@@ -86,18 +85,28 @@ fn parse_command(line: &str) -> Result<Command, &'static str> {
 }
 
 fn main() {
-    println!("🪐 Command Pipeline\n");
+    println!("🪐 Command Pipeline — three type-state surfaces\n");
+
+    // ── Law: typed resource holds the raw script bytes, consumed once ──
+    let script_text = b"PING\nSET greeting namaste\nGET greeting\nSTATS\nGET missing\n";
+    let resource = TypedResource::new(1, script_text.to_vec());
+    println!(
+        "[Law] TypedResource id={} bytes={}",
+        resource.id(),
+        resource.data().len()
+    );
+    let (res_id, bytes) = resource.consume();
+    let source = String::from_utf8(bytes).expect("utf8 script");
+    println!("[Law] consumed resource #{res_id}, script owned as String\n");
 
     let mut store = Store::new();
-    let script = [
-        "PING",
-        "SET greeting namaste",
-        "GET greeting",
-        "STATS",
-        "GET missing",
-    ];
 
-    for (i, line) in script.iter().enumerate() {
+    for (i, line) in source.lines().enumerate() {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
+        }
+
         let cmd = match parse_command(line) {
             Ok(c) => c,
             Err(e) => {
@@ -106,16 +115,35 @@ fn main() {
             }
         };
 
+        // Process type-state: pure measure of the line through the pipeline.
         let label = run_typed_pipeline(i as u64, line.to_string(), |s| s.len());
+
+        // Vision type-state: each command is treated as one cosmic breath.
+        let cosmic = run_cosmic_cycle();
+
         let response = store.handle(cmd);
-        println!("[{i}] len={label} <- {line:?} -> {response:?}");
+        println!(
+            "[{i}] len={label} cosmic={} <- {line:?} -> {response:?}",
+            cosmic.name()
+        );
     }
 
+    // Explicit TypedProcess walk (shows phase names).
     let p = TypedProcess::new(99, Command::Ping);
-    let p = p.advance().advance().advance();
+    println!(
+        "\n[Process] start phase={} cosmic={:?}",
+        p.phase_name(),
+        p.cosmic_state()
+    );
+    let p = p.advance().advance().advance(); // → Execute
+    println!("[Process] execute phase={}", p.phase_name());
     let (p, resp) = p.execute(|_| Response::Pong);
-    let _done = p.advance();
-    println!("\nTypedProcess single-shot: {resp:?}");
+    let done = p.advance(); // → Update
+    println!(
+        "[Process] done phase={} cosmic={:?} resp={resp:?}",
+        done.phase_name(),
+        done.cosmic_state()
+    );
 
     println!("\nTat Tvam Asi.");
 }
