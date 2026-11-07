@@ -14,6 +14,8 @@ Unite **Sanskrit** (humanity’s rational structuring of the essence of the univ
 with **Rust** (humanity’s rational structuring of the physical substrate of computation)  
 into an ultimate closed loop — a logic that is unborn, undying, and absolutely determinate.
 
+详细世界影响愿景（经客观校准）见 → [docs/VISION.md](docs/VISION.md)
+
 ## Dual Anchors
 
 ```
@@ -52,6 +54,7 @@ The highest emptiness (Śūnyatā) gives birth to marvelous form. Grand, elegant
 | `essence`    | Trait & Representation     | ✅ Core     |
 | `sunyata`    | Zero-Cost Abstraction      | ✅ Core     |
 | `mantra`     | Sanskrit-Rust Macro PoC    | ✅ Phase 1  |
+| `examples`   | Integrated demonstration   | ✅          |
 
 ## Roadmap
 
@@ -69,6 +72,7 @@ Map Pāṇinian phonology and grammar rules into Rust macros and type constraint
 ```bash
 cargo test
 cargo run
+cargo run --example closed_loops
 ```
 
 ---
