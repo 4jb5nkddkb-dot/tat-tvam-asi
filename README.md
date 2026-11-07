@@ -6,41 +6,39 @@
 
 ## Docs
 
-- [VISION](docs/VISION.md) · [STYLE_GUIDE](docs/STYLE_GUIDE.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [STATUS](docs/STATUS.md)
+[VISION](docs/VISION.md) · [STYLE_GUIDE](docs/STYLE_GUIDE.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [STATUS](docs/STATUS.md)
 
-## Features
+## Practical library APIs (`std`)
 
-| Feature | Default | Contents |
-|---------|---------|----------|
-| `std` | yes | full library + binary |
-| `alloc` | via `std` | `law`, `essence` (heap) |
-| core-only | `--no-default-features` | `vision`, `sunyata`, `process`, `typed_process`, `mantra` |
+| Module | Entry points |
+|--------|----------------|
+| `config` | `parse_config`, `Config`, `ConfigKey`, `Mode` |
+| `command` | `parse_command`, `Store`, `Command`, `Response` |
 
-## Modules
+## Type-state core
 
-| Module | Role |
-|--------|------|
-| `law` | RAII ownership |
-| `vision` | Exhaustive cosmic states |
-| `essence` | Name / Form traits |
-| `sunyata` | Zero-cost adapters |
-| `mantra` | Phonology PoC + macros |
-| `process` | Runtime-phase SacredProcess |
-| `typed_process` | **Type-state** pipeline (illegal transitions = compile error) |
+| API | Enforces |
+|-----|----------|
+| `TypedProcess` | phase order |
+| `Cosmic` | cosmic cycle order |
+| `TypedResource` | consume-once resource (alloc) |
 
-## Build & Run
+## Build / test / bench
 
 ```bash
 cargo test
 cargo run
-cargo run --example closed_loops
-cargo run --example phoneme_classify
 cargo run --example config_loop
 cargo run --example command_pipeline
+cargo run --example closed_loops
+cargo run --example phoneme_classify
 
-# core / alloc checks
-cargo check --no-default-features
-cargo check --no-default-features --features alloc
+# zero-cost intent check (SacredMap vs std map)
+cargo bench --bench sacred_map
+
+# no_std surfaces
+cargo check --no-default-features --lib
+cargo check --no-default-features --features alloc --lib
 ```
 
 **Chief Architect**: Zhanying Jia / Dayan Jia · **License**: MIT
