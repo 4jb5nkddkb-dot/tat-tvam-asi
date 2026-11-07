@@ -1,32 +1,31 @@
 # Project Status Snapshot
 
 **Version**: 0.1.0+  
-**Branch**: main  
-**Last quality check**: 2026-11-07 (manual + scheduled workflow verified)
+**Branch**: main
 
 ## Acceptance
 
 | Check | Result |
 |-------|--------|
-| Unit tests | 15 passed (includes typed_process) |
-| Integration tests | 7 passed |
+| Unit + integration tests | expanded (typed pipeline owned path) |
 | Examples | closed_loops, phoneme_classify, config_loop, command_pipeline |
-| `cargo check --no-default-features` | OK (core) |
-| `cargo check --no-default-features --features alloc` | OK |
-| `cargo fmt --check` | OK |
-| `cargo clippy -- -D warnings` | OK |
+| CI `test` job | fmt + test + clippy |
+| CI `no-std` job | core lib + alloc lib + clippy |
 
-## Delivered this round
+## Latest increments
 
-1. **Stronger constraints** — `typed_process::TypedProcess` type-state machine; illegal phase order fails at compile time.
-2. **Optional no_std** — features `std` (default), `alloc`; core modules work without std.
-3. **Larger example** — `examples/command_pipeline.rs` (closed commands, owned store, typed pipeline).
-4. **Scheduled quality workflow** — daily autofix (`cargo fmt` + `clippy --fix`) already active in `.github/workflows/scheduled-code-quality.yml`.
+1. **Type-state API expansion**
+   - `PhaseState` trait (`NAME`, `as_phase`, `as_cosmic`)
+   - `map_input`, `phase_name`, `cosmic_state`
+   - `execute_finish`, `run_typed_pipeline_owned`
+2. **CI no_std job**
+   - `cargo check/clippy --no-default-features --lib`
+   - `cargo check/clippy --no-default-features --features alloc --lib`
 
 ## Honest limits
 
-- `exhaustive!` is still a thin helper, not a full lint.
-- Phonology remains a PoC.
-- Type-state covers the process pipeline, not the whole crate API surface.
+- `exhaustive!` remains a thin helper.
+- Type-state is strong on the process pipeline; not every crate API is type-stated.
+- Phonology is still a PoC.
 
 Tat Tvam Asi.
