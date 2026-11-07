@@ -4,53 +4,54 @@
 
 ```
 tat_tvam_asi
-├── law          → 闭环一 · Karma & RAII          (Zhanying / The Law)
-├── vision       → 穷举因果                       (Dayan / The Vision)
-├── essence      → 闭环二 · Trait & Representation (Nāmarūpa)
-├── sunyata      → 闭环三 · Zero-Cost Abstraction  (Śūnyatā)
-├── mantra       → 阶段一 · Sanskrit-Rust PoC     (macros + expanded phonology)
-└── process      → Integrated SacredProcess       (all three loops in one unit)
+├── law            → Karma & RAII (alloc)
+├── typed_law      → Type-state resource lifecycle (alloc)
+├── vision         → Runtime cosmic State enum
+├── typed_vision   → Type-state cosmic path
+├── essence        → Trait & Form / Nāmarūpa (alloc)
+├── sunyata        → Zero-cost adapters & markers
+├── mantra         → Sanskrit-Rust PoC (macros + phonology)
+├── process        → Runtime-phase SacredProcess
+└── typed_process  → Type-state process pipeline
 ```
+
+## Feature Split
+
+| Feature | Modules |
+|---------|---------|
+| core (no features) | `vision`, `typed_vision`, `sunyata`, `mantra`, `process`, `typed_process` |
+| `alloc` | + `law`, `typed_law`, `essence` |
+| `std` (default) | full crate + binary + examples |
 
 ## Design Principles
 
-1. **No residual karma**  
-   Ownership is explicit. Resources are moved or dropped. Clone is avoided in the core path.
+1. **No residual karma** — ownership is explicit; consume/move preferred over clone.
+2. **No unknown states** — closed enums; type-state where sequence must be forced.
+3. **Zero-cost where it matters** — `PhantomData`, marker traits, iterator adapters.
+4. **Compile-time over runtime** — illegal transitions should not compile.
 
-2. **No unknown states**  
-   Enums are closed. Matches are exhaustive. The compiler is the first witness of correctness.
+## Type-state surfaces
 
-3. **Zero-cost where it matters**  
-   Type-level information (`PhantomData`, marker traits) and iterator adapters are designed to erase completely.
+| API | Sequence enforced |
+|-----|-------------------|
+| `TypedProcess<I, S>` | Observe → Intend → Predict → Execute → Evaluate → Update |
+| `Cosmic<S>` | Unborn → Manifest → Exhausted → Liberated |
+| `TypedResource<Alive>` | construct → (map) → consume once |
 
-4. **Compile-time over runtime**  
-   Prefer static dispatch, const evaluation, and macro expansion over dynamic checks.
+Runtime twins (`Phase`, `State`, `Resource`) remain for logging and simple demos.
 
-## SacredProcess
+## SacredProcess vs TypedProcess
 
-`SacredProcess<I, O>` exercises all three closed loops:
+- `SacredProcess` — dynamic phase field; good for demos and step loops.
+- `TypedProcess` — phase in the type; illegal order is a compile error.
 
-- Owns its input (`I`) — Law
-- Advances through a fully named, exhaustive `Phase` sequence — Vision
-- Produces an owned output (`O`) with no hidden allocation in the hot path — Śūnyatā
+## Phase 1 (Mantra)
 
-## Phase 1 Status (Mantra)
+- Macros: `exhaustive!`, `declare_essence!` (alloc)
+- Classes: `Svara`, `Vyanjana`, `Antastha`, `Usman`
+- Dimensions: `Sthana`, `Prayatna`, `Ghosa`, `Prana`
+- `Phoneme<C>`, `classify` / `classify_name`
 
-- Declarative macros: `exhaustive!`, `declare_essence!`
-- Primary classes: `Svara`, `Vyanjana`, `Antastha`, `Usman`
-- Secondary dimensions: `Sthana`, `Prayatna`, `Ghosa`, `Prana`
-- `Phoneme<C>` — type-level class marker (zero-cost)
-- `classify` / `classify_name` — closed classification functions
+## Docs
 
-## Documentation
-
-- [VISION.md](VISION.md) — calibrated world-impact vision
-- [STYLE_GUIDE.md](STYLE_GUIDE.md) — concrete coding rules under the dual anchors
-- [PROJECT_PLAN.md](PROJECT_PLAN.md) — original project plan
-
-## Future Directions
-
-- Stronger linting (reject non-exhaustive matches and unnecessary clones more aggressively)
-- Type-state refinements for `SacredProcess`
-- Broader morphological / sandhi experiments kept strictly zero-cost
-- Optional `no_std` feature flag for embedded / high-reliability targets
+- [VISION.md](VISION.md) · [STYLE_GUIDE.md](STYLE_GUIDE.md) · [STATUS.md](STATUS.md) · [PROJECT_PLAN.md](PROJECT_PLAN.md)
