@@ -3,29 +3,26 @@
 **Version**: 0.1.0+  
 **Branch**: main
 
-## Acceptance
+## Latest
 
-| Check | Result |
-|-------|--------|
-| Unit + integration tests | expanded (typed pipeline owned path) |
-| Examples | closed_loops, phoneme_classify, config_loop, command_pipeline |
-| CI `test` job | fmt + test + clippy |
-| CI `no-std` job | core lib + alloc lib + clippy |
+| Item | Status |
+|------|--------|
+| `typed_process` | Expanded (PhaseState, map_input, execute_finish, owned pipeline) |
+| `typed_vision` | New — Cosmic type-state cycle |
+| `typed_law` | New — TypedResource<Alive> consume-once (alloc) |
+| CI no_std job | Active (core + alloc lib checks) |
+| ARCHITECTURE | Synced with typed_* modules |
 
-## Latest increments
+## Type-state coverage
 
-1. **Type-state API expansion**
-   - `PhaseState` trait (`NAME`, `as_phase`, `as_cosmic`)
-   - `map_input`, `phase_name`, `cosmic_state`
-   - `execute_finish`, `run_typed_pipeline_owned`
-2. **CI no_std job**
-   - `cargo check/clippy --no-default-features --lib`
-   - `cargo check/clippy --no-default-features --features alloc --lib`
+- Process pipeline → `TypedProcess`
+- Cosmic cycle → `Cosmic`
+- Resource lifecycle → `TypedResource` (alloc)
 
 ## Honest limits
 
-- `exhaustive!` remains a thin helper.
-- Type-state is strong on the process pipeline; not every crate API is type-stated.
-- Phonology is still a PoC.
+- `exhaustive!` is still a thin helper.
+- Phonology remains a PoC.
+- Not every public API is type-stated (by design: runtime twins stay for demos).
 
 Tat Tvam Asi.
