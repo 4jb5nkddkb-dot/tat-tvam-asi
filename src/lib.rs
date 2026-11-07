@@ -72,3 +72,34 @@ pub mod vision {
 /// Re-exports for convenient use of the dual anchors.
 pub use law::Resource;
 pub use vision::State;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn resource_ownership_moves() {
+        let r = Resource::new(42, vec![1, 2, 3]);
+        assert_eq!(r.id(), 42);
+        let data = r.into_data();
+        assert_eq!(data, vec![1, 2, 3]);
+        // r is moved; cannot be used again — this is the Law.
+    }
+
+    #[test]
+    fn state_machine_is_exhaustive_and_terminates() {
+        let mut s = State::Unborn;
+        let mut steps = 0;
+        while !s.is_final() {
+            s = s.transition();
+            steps += 1;
+            assert!(steps <= 3, "must reach liberation in finite steps");
+        }
+        assert_eq!(s, State::Liberated);
+    }
+
+    #[test]
+    fn liberated_is_idempotent() {
+        assert_eq!(State::Liberated.transition(), State::Liberated);
+    }
+}
