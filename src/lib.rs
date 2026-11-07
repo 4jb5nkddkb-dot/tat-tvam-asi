@@ -10,13 +10,25 @@
 //! 1. Karma & RAII
 //! 2. Trait & Representation (Nāmarūpa)
 //! 3. Śūnyatā & Zero-Cost Abstraction
+//!
+//! Features:
+//! - `std` (default): full library + binary
+//! - `alloc`: heap types without full std (`law`, `essence`)
+//! - neither: core-only (`vision`, `sunyata`, `process`, `typed_process`, `mantra`)
+
+#![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(feature = "alloc")]
+extern crate alloc;
 
 // ──────────────────────────────────────────────
-// 闭环一 · 生灭因果闭环 (Karma & RAII)
+// 闭环一 · 生灭因果闭环 (Karma & RAII) — requires alloc
 // ──────────────────────────────────────────────
 
-/// The Law: everything that is born must die cleanly.
+#[cfg(feature = "alloc")]
 pub mod law {
+    use alloc::vec::Vec;
+
     /// A resource that cannot outlive its rightful owner.
     pub struct Resource {
         id: u64,
@@ -32,7 +44,6 @@ pub mod law {
             self.id
         }
 
-        /// Consume self and return the inner data.
         pub fn into_data(self) -> Vec<u8> {
             self.data
         }
@@ -40,11 +51,14 @@ pub mod law {
 }
 
 // ──────────────────────────────────────────────
-// 闭环二 · 本质变现闭环 (Trait & Representation)
+// 闭环二 · 本质变现闭环 — requires alloc (String)
 // ──────────────────────────────────────────────
 
+#[cfg(feature = "alloc")]
 pub mod essence {
-    /// The pure Name (essence) that any Form must embody.
+    use alloc::string::String;
+    use alloc::format;
+
     pub trait Essence {
         fn name(&self) -> &'static str;
         fn manifest(&self) -> String;
@@ -84,7 +98,7 @@ pub mod essence {
         }
 
         fn manifest(&self) -> String {
-            "primordial vibration".to_string()
+            String::from("primordial vibration")
         }
     }
 
@@ -97,13 +111,13 @@ pub mod essence {
         }
 
         fn manifest(&self) -> String {
-            "release from the cycle of birth and death".to_string()
+            String::from("release from the cycle of birth and death")
         }
     }
 }
 
 // ──────────────────────────────────────────────
-// 闭环二延伸 · 穷举因果 (Exhaustive Vision)
+// Vision / Sunyata / Mantra / Process — core
 // ──────────────────────────────────────────────
 
 pub mod vision {
@@ -130,10 +144,6 @@ pub mod vision {
         }
     }
 }
-
-// ──────────────────────────────────────────────
-// 闭环三 · 真空妙有与零成本闭环 (Śūnyatā)
-// ──────────────────────────────────────────────
 
 pub mod sunyata {
     use core::marker::PhantomData;
@@ -192,18 +202,9 @@ pub mod sunyata {
     impl<I: Iterator> SacredIterator for I {}
 }
 
-// ──────────────────────────────────────────────
-// 阶段一 · 圣言转译器 (Mantra + Expanded Phonology)
-// ──────────────────────────────────────────────
-
 pub mod mantra {
     use core::marker::PhantomData;
 
-    /// Exhaustive match helper.
-    ///
-    /// Call as:
-    /// `exhaustive!(match (value) { A => ..., B => ... })`
-    /// Parentheses around the scrutinee are required by macro matcher rules.
     #[macro_export]
     macro_rules! exhaustive {
         (match ($val:expr) { $($arms:tt)* }) => {
@@ -211,6 +212,7 @@ pub mod mantra {
         };
     }
 
+    #[cfg(feature = "alloc")]
     #[macro_export]
     macro_rules! declare_essence {
         ($name:ident, $sacred:literal, $manifestation:expr) => {
@@ -222,8 +224,8 @@ pub mod mantra {
                     $sacred
                 }
 
-                fn manifest(&self) -> String {
-                    ($manifestation).to_string()
+                fn manifest(&self) -> alloc::string::String {
+                    alloc::string::String::from($manifestation)
                 }
             }
         };
@@ -257,17 +259,15 @@ pub mod mantra {
         const NAME: &'static str = "ūṣman";
     }
 
-    /// Place of articulation (sthāna)
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum Sthana {
-        Kantha,    // guttural
-        Talavya,   // palatal
-        Murdhanya, // retroflex
-        Dantya,    // dental
-        Osthya,    // labial
+        Kantha,
+        Talavya,
+        Murdhanya,
+        Dantya,
+        Osthya,
     }
 
-    /// Manner (simplified prayatna)
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum Prayatna {
         Sparsha,
@@ -276,14 +276,12 @@ pub mod mantra {
         Svara,
     }
 
-    /// Voicing
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum Ghosa {
         Aghosa,
         Ghosavat,
     }
 
-    /// Aspiration
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum Prana {
         Alpaprana,
@@ -322,7 +320,6 @@ pub mod mantra {
         pub prana: Option<Prana>,
     }
 
-    /// Closed classification into Pāṇinian-inspired categories.
     pub fn classify(symbol: char) -> Classification {
         match symbol {
             'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => Classification {
@@ -382,24 +379,25 @@ pub mod mantra {
     }
 }
 
-// ──────────────────────────────────────────────
-// SacredProcess
-// ──────────────────────────────────────────────
-
 pub mod process;
+pub mod typed_process;
 
 // ──────────────────────────────────────────────
 // Public Re-exports
 // ──────────────────────────────────────────────
 
+#[cfg(feature = "alloc")]
 pub use essence::{Essence, Form, Moksha, Om};
+#[cfg(feature = "alloc")]
 pub use law::Resource;
+
 pub use mantra::{
     classify, classify_name, Antastha, Classification, Ghosa, Phoneme, PhonemeClass, Prana,
     Prayatna, Sthana, Svara, Usman, Vyanjana,
 };
 pub use process::{phase_to_state, Phase, SacredProcess};
 pub use sunyata::{PhantomEssence, SacredIterator, SacredMap};
+pub use typed_process::{run_typed_pipeline, TypedProcess};
 pub use vision::State;
 
 // ──────────────────────────────────────────────
@@ -409,15 +407,15 @@ pub use vision::State;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mantra::{Phoneme, Svara, Vyanjana};
     use sunyata::SacredIterator;
 
+    #[cfg(feature = "alloc")]
     #[test]
     fn resource_ownership_moves() {
-        let r = Resource::new(42, vec![1, 2, 3]);
+        let r = Resource::new(42, alloc::vec![1, 2, 3]);
         assert_eq!(r.id(), 42);
         let data = r.into_data();
-        assert_eq!(data, vec![1, 2, 3]);
+        assert_eq!(data, alloc::vec![1, 2, 3]);
     }
 
     #[test]
@@ -432,6 +430,7 @@ mod tests {
         assert_eq!(s, State::Liberated);
     }
 
+    #[cfg(feature = "alloc")]
     #[test]
     fn essence_manifestation() {
         let om = Form::new(Om);
@@ -442,12 +441,12 @@ mod tests {
     #[test]
     fn zero_cost_sacred_map() {
         let data = [1u32, 2, 3, 4];
-        let result: Vec<_> = data
+        let result: alloc::vec::Vec<_> = data
             .iter()
             .sacred_map(|x| x * 2)
             .sacred_map(|x| x + 1)
             .collect();
-        assert_eq!(result, vec![3, 5, 7, 9]);
+        assert_eq!(result, alloc::vec![3, 5, 7, 9]);
     }
 
     #[test]
@@ -476,5 +475,11 @@ mod tests {
     fn classify_name_convenience() {
         assert_eq!(classify_name('a'), "svara");
         assert_eq!(classify_name('y'), "antaḥstha");
+    }
+
+    #[test]
+    fn typed_pipeline_runs() {
+        let out = run_typed_pipeline(1, 7u32, |x| x * 2);
+        assert_eq!(out, 14);
     }
 }
