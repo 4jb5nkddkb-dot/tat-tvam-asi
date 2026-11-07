@@ -15,7 +15,7 @@ Unite **Sanskrit** with **Rust** into an ultimate closed loop — a logic that i
 - World-impact vision (calibrated) → [docs/VISION.md](docs/VISION.md)
 - Coding style under the dual anchors → [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md)
 - Architecture → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- Status & evaluation snapshot → [docs/STATUS.md](docs/STATUS.md)
+- Status & acceptance → [docs/STATUS.md](docs/STATUS.md)
 
 ## Dual Anchors
 
@@ -33,19 +33,18 @@ Unite **Sanskrit** with **Rust** into an ultimate closed loop — a logic that i
 2. **Trait & Representation** — Name/Form separation, exhaustive states  
 3. **Śūnyatā & Zero-Cost** — Grand abstractions that erase at compile time
 
-## Current Implementation (v0.1.0)
+## Current Implementation (v0.1.0 — accepted)
 
-| Module / Item        | Role                                      | Status |
-|----------------------|-------------------------------------------|--------|
-| `law`                | Ownership / RAII                          | ✅     |
-| `vision`             | Exhaustive state machine                  | ✅     |
-| `essence`            | Trait & Form (Nāmarūpa)                   | ✅     |
-| `sunyata`            | Zero-cost adapters & markers              | ✅     |
-| `mantra`             | Macros + expanded phonology               | ✅     |
-| `process`            | Integrated SacredProcess                  | ✅     |
-| Style Guide          | Concrete coding rules                     | ✅     |
-| Unit + integration tests | `src` + `tests/integration.rs`        | ✅     |
-| CI                   | test + clippy                             | ✅     |
+| Module / Item | Role | Status |
+|---------------|------|--------|
+| `law` | Ownership / RAII | ✅ |
+| `vision` | Exhaustive state machine | ✅ |
+| `essence` | Trait & Form | ✅ |
+| `sunyata` | Zero-cost adapters | ✅ |
+| `mantra` | Macros + phonology PoC | ✅ |
+| `process` | SacredProcess | ✅ |
+| Tests | 12 unit + 7 integration | ✅ |
+| CI | fmt + test + clippy | ✅ |
 
 ## Build & Run
 
@@ -54,6 +53,7 @@ cargo test
 cargo run
 cargo run --example closed_loops
 cargo run --example phoneme_classify
+cargo run --example config_loop
 cargo clippy -- -D warnings
 ```
 
@@ -61,4 +61,4 @@ cargo clippy -- -D warnings
 
 **Chief Architect**: Zhanying Jia / Dayan Jia  
 **License**: MIT  
-**Baseline**: v0.1.0 converged
+**Baseline**: v0.1.0 accepted (19 tests green)
