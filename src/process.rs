@@ -62,16 +62,12 @@ impl<I, O> SacredProcess<I, O> {
         self.phase
     }
 
+    /// True when the process has reached the terminal phase.
     pub fn is_complete(&self) -> bool {
-        self.output.is_some()
+        self.phase.is_terminal()
     }
-}
 
-impl<I, O> SacredProcess<I, O>
-where
-    O: Default,
-{
-    /// Advance one step. Returns true if the process completed.
+    /// Advance one step. Returns true if the process has completed after this step.
     pub fn step<F>(&mut self, f: F) -> bool
     where
         F: FnOnce(&I, Phase) -> O,
@@ -80,8 +76,8 @@ where
             return true;
         }
 
-        // Produce output only on the final actionable phase for this simple model.
-        if self.phase == Phase::Execute {
+        // Produce output on the Execute phase.
+        if self.phase == Phase::Execute && self.output.is_none() {
             let out = f(&self.input, self.phase);
             self.output = Some(out);
         }
@@ -89,7 +85,7 @@ where
         match self.phase.next() {
             Some(next) => {
                 self.phase = next;
-                false
+                self.is_complete()
             }
             None => true,
         }
@@ -121,10 +117,7 @@ mod tests {
 
         let mut steps = 0;
         while !proc.is_complete() && steps < 10 {
-            proc.step(|input, phase| {
-                // Simple pure function of input + phase
-                input.wrapping_add(phase as u32)
-            });
+            proc.step(|input, phase| input.wrapping_add(phase as u32));
             steps += 1;
         }
 
@@ -150,5 +143,21 @@ mod tests {
         assert_eq!(phase_to_state(Phase::Observe), State::Unborn);
         assert_eq!(phase_to_state(Phase::Execute), State::Manifest);
         assert_eq!(phase_to_state(Phase::Update), State::Liberated);
+    }
+
+    #[test]
+    fn output_produced_exactly_once() {
+        let mut proc = SacredProcess::new(7, 100u32);
+        let mut produced = 0u32;
+
+        while !proc.is_complete() {
+            proc.step(|input, phase| {
+                produced += 1;
+                input + phase as u32
+            });
+        }
+
+        assert_eq!(produced, 1);
+        assert!(proc.into_output().is_some());
     }
 }
