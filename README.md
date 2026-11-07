@@ -10,11 +10,11 @@
 ## Vision
 
 Break the utilitarian chaos of modern computing languages.  
-Unite **Sanskrit** (humanity’s rational structuring of the essence of the universe)  
-with **Rust** (humanity’s rational structuring of the physical substrate of computation)  
-into an ultimate closed loop — a logic that is unborn, undying, and absolutely determinate.
+Unite **Sanskrit** with **Rust** into an ultimate closed loop — a logic that is unborn, undying, and absolutely determinate.
 
-详细世界影响愿景（经客观校准）见 → [docs/VISION.md](docs/VISION.md)
+- World-impact vision (calibrated) → [docs/VISION.md](docs/VISION.md)
+- Coding style under the dual anchors → [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md)
+- Architecture → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
 ## Dual Anchors
 
@@ -26,48 +26,31 @@ into an ultimate closed loop — a logic that is unborn, undying, and absolutely
                 【 贾大眼 (Dayan Jia) 】   ──── The Vision
 ```
 
-### 锚点 A · 贾战英 — Law & Order
-- Mapping: Rust `Borrow Checker` ↔ Sanskrit *Aṣṭādhyāyī*
-- Duty: Wage war at compile time. Sever dangling pointers, memory leaks, and syntactic ambiguity. Guard purity with iron rules.
-
-### 锚点 B · 贾大眼 — Vision & Exhaustion
-- Mapping: Rust `match` ↔ Sanskrit *Nāmarūpa*
-- Duty: With the eye of the creator, exhaust every state, every branch, every causal chain. Leave no `Null`, no surprise, no unknown.
-
 ## Three Closed Loops
 
-### 1. Karma & RAII — Birth-Death Causal Closure
-Ownership and lifetimes ensure every resource has a determined origin and end. No GC reincarnation cycles. No residual karma.
-
-### 2. Trait & Representation — Essence Manifestation Closure
-Strong typing + Traits + Enums turn business reality into pure essence (Name) manifested on form. Compilation is mathematical proof of correctness.
-
-### 3. Śūnyatā & Zero-Cost Abstraction — Vacuum & Marvelous Existence
-The highest emptiness (Śūnyatā) gives birth to marvelous form. Grand, elegant abstractions (generics, iterators, macros) compile down to pure machine code with **zero runtime cost**. Upper architecture is sacred and vast; the silicon runs with no residual burden.
+1. **Karma & RAII** — Ownership and determined end of life  
+2. **Trait & Representation** — Name/Form separation, exhaustive states  
+3. **Śūnyatā & Zero-Cost** — Grand abstractions that erase at compile time
 
 ## Current Implementation
 
-| Module / Item     | Anchor / Loop                  | Status      |
-|-------------------|--------------------------------|-------------|
-| `law`             | Zhanying · Karma & RAII        | ✅ Core     |
-| `vision`          | Dayan · Exhaustive Match       | ✅ Core     |
-| `essence`         | Trait & Representation         | ✅ Core     |
-| `sunyata`         | Zero-Cost Abstraction          | ✅ Core     |
-| `mantra`          | Sanskrit-Rust Macro + Phoneme  | ✅ Phase 1  |
-| `process`         | Integrated SacredProcess       | ✅ Core     |
-| `examples`        | Full + Phoneme demos           | ✅          |
-| CI (GitHub Actions) | test + clippy                | ✅          |
+| Module / Item        | Role                                      | Status |
+|----------------------|-------------------------------------------|--------|
+| `law`                | Ownership / RAII                          | ✅     |
+| `vision`             | Exhaustive state machine                  | ✅     |
+| `essence`            | Trait & Form (Nāmarūpa)                   | ✅     |
+| `sunyata`            | Zero-cost adapters & markers              | ✅     |
+| `mantra`             | Macros + expanded phonology               | ✅     |
+| `process`            | Integrated SacredProcess                  | ✅     |
+| Style Guide          | Concrete coding rules                     | ✅     |
+| CI                   | test + clippy                             | ✅     |
 
-## Roadmap
+## Phase Status
 
-### Phase 1 — Sanskrit-Rust Compiler Engine (PoC)
-Map Pāṇinian phonology and grammar rules into Rust macros and type constraints.  
-→ Phoneme categories and mantra macros are live.
-
-### Phase 2 — Sanskritization of Existing Codebases
-- Eliminate all compromising `.clone()`
-- Replace every `if let` / `unwrap()` with exhaustive `match`
-- Embody Dayan’s vision in every control flow
+- **Phase A (Constraints)** — tighter process semantics, clippy baseline, style guide  
+- **Phase B (Sanskrit-Rust)** — expanded phoneme dimensions (`Sthana`, `Ghosa`, `Prana`…)  
+- **Phase C (Reusable patterns)** — SacredProcess as the combined unit  
+- **Phase D (Docs & practice)** — VISION / ARCHITECTURE / STYLE_GUIDE landed
 
 ## Build & Run
 
