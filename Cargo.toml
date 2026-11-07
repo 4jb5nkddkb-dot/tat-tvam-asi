@@ -8,7 +8,14 @@ license = "MIT"
 repository = "https://github.com/4jb5nkddkb-dot/tat-tvam-asi"
 readme = "README.md"
 keywords = ["rust", "sanskrit", "zero-cost", "ownership", "philosophy"]
-categories = ["rust-patterns"]
+categories = ["rust-patterns", "no-std"]
+
+[features]
+default = ["std"]
+# Full standard library (binaries & most examples).
+std = ["alloc"]
+# Heap types (Vec, String) without full std — enables law/essence on embedded+alloc.
+alloc = []
 
 [dependencies]
 
@@ -19,3 +26,4 @@ path = "src/lib.rs"
 [[bin]]
 name = "tat-tvam-asi"
 path = "src/main.rs"
+required-features = ["std"]
