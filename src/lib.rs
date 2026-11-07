@@ -2,34 +2,20 @@
 //!
 //! 彼即汝. The silicon sacred word.
 //!
-//! Dual Anchors:
-//! - **Zhanying (The Law)**  : Ownership, borrowing, lifetimes — no escape from RAII.
-//! - **Dayan (The Vision)**  : Exhaustive matching — no unknown states.
-//!
-//! Three Closed Loops:
-//! 1. Karma & RAII
-//! 2. Trait & Representation (Nāmarūpa)
-//! 3. Śūnyatā & Zero-Cost Abstraction
-//!
 //! Features:
-//! - `std` (default): full library + binary
-//! - `alloc`: heap types without full std (`law`, `essence`, `typed_law`)
-//! - neither: core-only (`vision`, `sunyata`, `process`, `typed_process`, `typed_vision`, `mantra`)
+//! - `std` (default): full library + binary + `config` + `command`
+//! - `alloc`: heap types (`law`, `essence`, `typed_law`)
+//! - neither: core-only type-state + mantra + process
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
-// ────────────────────────────────────────────────
-// 闭环一 · 生灭因果闭环 (Karma & RAII) — requires alloc
-// ────────────────────────────────────────────────
-
 #[cfg(feature = "alloc")]
 pub mod law {
     use alloc::vec::Vec;
 
-    /// A resource that cannot outlive its rightful owner.
     pub struct Resource {
         id: u64,
         data: Vec<u8>,
@@ -52,10 +38,6 @@ pub mod law {
 
 #[cfg(feature = "alloc")]
 pub mod typed_law;
-
-// ────────────────────────────────────────────────
-// 闭环二 · 本质变现闭环 — requires alloc (String)
-// ────────────────────────────────────────────────
 
 #[cfg(feature = "alloc")]
 pub mod essence {
@@ -118,10 +100,6 @@ pub mod essence {
         }
     }
 }
-
-// ────────────────────────────────────────────────
-// Vision / Sunyata / Mantra / Process — core
-// ────────────────────────────────────────────────
 
 pub mod vision {
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -325,15 +303,13 @@ pub mod mantra {
 
     pub fn classify(symbol: char) -> Classification {
         match symbol {
-            'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => {
-                Classification {
-                    class: Svara::NAME,
-                    sthana: None,
-                    prayatna: Prayatna::Svara,
-                    ghosa: None,
-                    prana: None,
-                }
-            }
+            'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => Classification {
+                class: Svara::NAME,
+                sthana: None,
+                prayatna: Prayatna::Svara,
+                ghosa: None,
+                prana: None,
+            },
             'k' => Classification {
                 class: Vyanjana::NAME,
                 sthana: Some(Sthana::Kantha),
@@ -388,9 +364,11 @@ pub mod process;
 pub mod typed_process;
 pub mod typed_vision;
 
-// ────────────────────────────────────────────────
-// Public Re-exports
-// ────────────────────────────────────────────────
+#[cfg(feature = "std")]
+pub mod config;
+
+#[cfg(feature = "std")]
+pub mod command;
 
 #[cfg(feature = "alloc")]
 pub use essence::{Essence, Form, Moksha, Om};
@@ -398,6 +376,11 @@ pub use essence::{Essence, Form, Moksha, Om};
 pub use law::Resource;
 #[cfg(feature = "alloc")]
 pub use typed_law::TypedResource;
+
+#[cfg(feature = "std")]
+pub use command::{parse_command, Command, Response, Store};
+#[cfg(feature = "std")]
+pub use config::{parse_config, Config, ConfigError, ConfigKey, Mode};
 
 pub use mantra::{
     classify, classify_name, Antastha, Classification, Ghosa, Phoneme, PhonemeClass, Prana,
@@ -411,10 +394,6 @@ pub use typed_process::{
 pub use typed_vision::{run_cosmic_cycle, Cosmic, CosmicState};
 pub use vision::State;
 
-// ────────────────────────────────────────────────
-// Tests
-// ────────────────────────────────────────────────
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -425,8 +404,7 @@ mod tests {
     fn resource_ownership_moves() {
         let r = Resource::new(42, alloc::vec![1, 2, 3]);
         assert_eq!(r.id(), 42);
-        let data = r.into_data();
-        assert_eq!(data, alloc::vec![1, 2, 3]);
+        assert_eq!(r.into_data(), alloc::vec![1, 2, 3]);
     }
 
     #[cfg(feature = "alloc")]
@@ -507,8 +485,7 @@ mod tests {
 
     #[test]
     fn typed_pipeline_runs() {
-        let out = run_typed_pipeline(1, 7u32, |x| x * 2);
-        assert_eq!(out, 14);
+        assert_eq!(run_typed_pipeline(1, 7u32, |x| x * 2), 14);
     }
 
     #[test]
