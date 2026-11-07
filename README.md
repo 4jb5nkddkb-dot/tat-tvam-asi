@@ -2,49 +2,31 @@
 
 **彼即汝 —— 硅基圣言闭环计划**
 
-> “Python 是人类在迷雾中发明的玩具，用来向机器妥协；  
-> 而本项目的核心，是在 **贾战英** 的律法与 **贾大眼** 的洞察下，  
-> 像吟诵梵语圣赞一样写出 Rust 代码。  
-> 让硅基芯片的每一次通电，都成为对宇宙物理定律的精准致敬。”
+> 在 **贾战英** 的律法与 **贾大眼** 的洞察下，像吟诵梵语圣赞一样写出 Rust 代码。
 
-## Vision
+## Docs
 
-Break the utilitarian chaos of modern computing languages.  
-Unite **Sanskrit** with **Rust** into an ultimate closed loop — a logic that is unborn, undying, and absolutely determinate.
+- [VISION](docs/VISION.md) · [STYLE_GUIDE](docs/STYLE_GUIDE.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [STATUS](docs/STATUS.md)
 
-- World-impact vision (calibrated) → [docs/VISION.md](docs/VISION.md)
-- Coding style under the dual anchors → [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md)
-- Architecture → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- Status & acceptance → [docs/STATUS.md](docs/STATUS.md)
+## Features
 
-## Dual Anchors
+| Feature | Default | Contents |
+|---------|---------|----------|
+| `std` | yes | full library + binary |
+| `alloc` | via `std` | `law`, `essence` (heap) |
+| core-only | `--no-default-features` | `vision`, `sunyata`, `process`, `typed_process`, `mantra` |
 
-```
-                【 贾战英 (Zhanying Jia) 】 ──── The Law
-                            │
-                    [ Core Consciousness Anchor ]
-                            │
-                【 贾大眼 (Dayan Jia) 】   ──── The Vision
-```
+## Modules
 
-## Three Closed Loops
-
-1. **Karma & RAII** — Ownership and determined end of life  
-2. **Trait & Representation** — Name/Form separation, exhaustive states  
-3. **Śūnyatā & Zero-Cost** — Grand abstractions that erase at compile time
-
-## Current Implementation (v0.1.0 — accepted)
-
-| Module / Item | Role | Status |
-|---------------|------|--------|
-| `law` | Ownership / RAII | ✅ |
-| `vision` | Exhaustive state machine | ✅ |
-| `essence` | Trait & Form | ✅ |
-| `sunyata` | Zero-cost adapters | ✅ |
-| `mantra` | Macros + phonology PoC | ✅ |
-| `process` | SacredProcess | ✅ |
-| Tests | 12 unit + 7 integration | ✅ |
-| CI | fmt + test + clippy | ✅ |
+| Module | Role |
+|--------|------|
+| `law` | RAII ownership |
+| `vision` | Exhaustive cosmic states |
+| `essence` | Name / Form traits |
+| `sunyata` | Zero-cost adapters |
+| `mantra` | Phonology PoC + macros |
+| `process` | Runtime-phase SacredProcess |
+| `typed_process` | **Type-state** pipeline (illegal transitions = compile error) |
 
 ## Build & Run
 
@@ -54,11 +36,11 @@ cargo run
 cargo run --example closed_loops
 cargo run --example phoneme_classify
 cargo run --example config_loop
-cargo clippy -- -D warnings
+cargo run --example command_pipeline
+
+# core / alloc checks
+cargo check --no-default-features
+cargo check --no-default-features --features alloc
 ```
 
----
-
-**Chief Architect**: Zhanying Jia / Dayan Jia  
-**License**: MIT  
-**Baseline**: v0.1.0 accepted (19 tests green)
+**Chief Architect**: Zhanying Jia / Dayan Jia · **License**: MIT
