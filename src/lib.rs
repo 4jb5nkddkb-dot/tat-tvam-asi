@@ -10,10 +10,6 @@
 //! 1. Karma & RAII
 //! 2. Trait & Representation (Nāmarūpa)
 //! 3. Śūnyatā & Zero-Cost Abstraction
-//!
-//! This crate aims to be `no_std` friendly in its core modules.
-
-#![cfg_attr(not(test), no_std)]
 
 // ──────────────────────────────────────────────
 // 闭环一 · 生灭因果闭环 (Karma & RAII)
@@ -22,14 +18,13 @@
 /// The Law: everything that is born must die cleanly.
 pub mod law {
     /// A resource that cannot outlive its rightful owner.
-    /// Demonstrates pure ownership transfer without clone.
     pub struct Resource {
         id: u64,
-        data: alloc::vec::Vec<u8>,
+        data: Vec<u8>,
     }
 
     impl Resource {
-        pub fn new(id: u64, data: alloc::vec::Vec<u8>) -> Self {
+        pub fn new(id: u64, data: Vec<u8>) -> Self {
             Self { id, data }
         }
 
@@ -38,7 +33,7 @@ pub mod law {
         }
 
         /// Consume self and return the inner data.
-        pub fn into_data(self) -> alloc::vec::Vec<u8> {
+        pub fn into_data(self) -> Vec<u8> {
             self.data
         }
     }
@@ -58,10 +53,9 @@ pub mod essence {
     /// The pure Name (essence) that any Form must embody.
     pub trait Essence {
         fn name(&self) -> &'static str;
-        fn manifest(&self) -> alloc::string::String;
+        fn manifest(&self) -> String;
     }
 
-    /// Concrete Form that carries an Essence.
     #[derive(Debug)]
     pub struct Form<T: Essence> {
         inner: T,
@@ -82,8 +76,8 @@ pub mod essence {
             self.inner.name()
         }
 
-        fn manifest(&self) -> alloc::string::String {
-            alloc::format!("Form[{}] → {}", self.inner.name(), self.inner.manifest())
+        fn manifest(&self) -> String {
+            format!("Form[{}] → {}", self.inner.name(), self.inner.manifest())
         }
     }
 
@@ -95,8 +89,8 @@ pub mod essence {
             "ॐ"
         }
 
-        fn manifest(&self) -> alloc::string::String {
-            alloc::string::String::from("primordial vibration")
+        fn manifest(&self) -> String {
+            "primordial vibration".to_string()
         }
     }
 
@@ -108,8 +102,8 @@ pub mod essence {
             "mokṣa"
         }
 
-        fn manifest(&self) -> alloc::string::String {
-            alloc::string::String::from("release from the cycle of birth and death")
+        fn manifest(&self) -> String {
+            "release from the cycle of birth and death".to_string()
         }
     }
 }
@@ -150,7 +144,6 @@ pub mod vision {
 pub mod sunyata {
     use core::marker::PhantomData;
 
-    /// Zero-sized marker carrying type-level information only.
     #[derive(Debug, Clone, Copy, Default)]
     pub struct PhantomEssence<T> {
         _marker: PhantomData<T>,
@@ -164,7 +157,6 @@ pub mod sunyata {
         }
     }
 
-    /// Zero-cost iterator adapter.
     pub struct SacredMap<I, F> {
         iter: I,
         f: F,
@@ -213,7 +205,6 @@ pub mod sunyata {
 pub mod mantra {
     use core::marker::PhantomData;
 
-    /// Forces naming of every match arm (documentation + convention macro).
     #[macro_export]
     macro_rules! exhaustive {
         (
@@ -227,7 +218,6 @@ pub mod mantra {
         };
     }
 
-    /// Declares a pure Name that must be manifested.
     #[macro_export]
     macro_rules! declare_essence {
         ($name:ident, $sacred:literal, $manifestation:expr) => {
@@ -239,14 +229,12 @@ pub mod mantra {
                     $sacred
                 }
 
-                fn manifest(&self) -> alloc::string::String {
-                    alloc::string::String::from($manifestation)
+                fn manifest(&self) -> String {
+                    ($manifestation).to_string()
                 }
             }
         };
     }
-
-    // ── Primary phoneme classes ───────────────────────────────────
 
     pub trait PhonemeClass {
         const NAME: &'static str;
@@ -276,42 +264,39 @@ pub mod mantra {
         const NAME: &'static str = "ūṣman";
     }
 
-    // ── Secondary dimensions (zero-cost markers) ──────────────────
-
     /// Place of articulation (sthāna)
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum Sthana {
-        Kanthya,   // guttural
+        Kantha,    // guttural
         Talavya,   // palatal
         Murdhanya, // retroflex
         Dantya,    // dental
         Osthya,    // labial
     }
 
-    /// Manner / effort (prayatna) — simplified
+    /// Manner (simplified prayatna)
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum Prayatna {
-        Sparsha,  // contact (stops)
-        Antastha, // approximate
-        Usman,    // fricative
-        Svara,    // vowel
+        Sparsha,
+        Antastha,
+        Usman,
+        Svara,
     }
 
     /// Voicing
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum Ghosa {
-        Aghosa, // unvoiced
-        Ghosavat, // voiced
+        Aghosa,
+        Ghosavat,
     }
 
     /// Aspiration
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum Prana {
-        Alpaprana, // unaspirated
-        Mahaprana, // aspirated
+        Alpaprana,
+        Mahaprana,
     }
 
-    /// Typed phoneme with class marker (zero-cost for the marker).
     #[derive(Debug, Clone, Copy)]
     pub struct Phoneme<C: PhonemeClass> {
         symbol: char,
@@ -335,7 +320,6 @@ pub mod mantra {
         }
     }
 
-    /// Full classification result for a single sound.
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub struct Classification {
         pub class: &'static str,
@@ -345,10 +329,9 @@ pub mod mantra {
         pub prana: Option<Prana>,
     }
 
-    /// Closed classification of a character into Pāṇinian-inspired categories.
+    /// Closed classification into Pāṇinian-inspired categories.
     pub fn classify(symbol: char) -> Classification {
         match symbol {
-            // Vowels
             'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => Classification {
                 class: Svara::NAME,
                 sthana: None,
@@ -356,36 +339,20 @@ pub mod mantra {
                 ghosa: None,
                 prana: None,
             },
-            // Gutturals
             'k' => Classification {
                 class: Vyanjana::NAME,
-                sthana: Some(Sthana::Kanthya),
+                sthana: Some(Sthana::Kantha),
                 prayatna: Prayatna::Sparsha,
                 ghosa: Some(Ghosa::Aghosa),
                 prana: Some(Prana::Alpaprana),
-            },
-            'kh' => Classification {
-                class: Vyanjana::NAME,
-                sthana: Some(Sthana::Kanthya),
-                prayatna: Prayatna::Sparsha,
-                ghosa: Some(Ghosa::Aghosa),
-                prana: Some(Prana::Mahaprana),
             },
             'g' => Classification {
                 class: Vyanjana::NAME,
-                sthana: Some(Sthana::Kanthya),
+                sthana: Some(Sthana::Kantha),
                 prayatna: Prayatna::Sparsha,
                 ghosa: Some(Ghosa::Ghosavat),
                 prana: Some(Prana::Alpaprana),
             },
-            'gh' => Classification {
-                class: Vyanjana::NAME,
-                sthana: Some(Sthana::Kanthya),
-                prayatna: Prayatna::Sparsha,
-                ghosa: Some(Ghosa::Ghosavat),
-                prana: Some(Prana::Mahaprana),
-            },
-            // Simple fallbacks for other consonants / semi-vowels / sibilants
             'y' | 'r' | 'l' | 'v' => Classification {
                 class: Antastha::NAME,
                 sthana: None,
@@ -400,7 +367,6 @@ pub mod mantra {
                 ghosa: Some(Ghosa::Aghosa),
                 prana: Some(Prana::Mahaprana),
             },
-            // Generic consonant fallback
             _ if symbol.is_ascii_alphabetic() => Classification {
                 class: Vyanjana::NAME,
                 sthana: None,
@@ -418,7 +384,6 @@ pub mod mantra {
         }
     }
 
-    /// Convenience: just the primary class name.
     pub fn classify_name(symbol: char) -> &'static str {
         classify(symbol).class
     }
@@ -429,12 +394,6 @@ pub mod mantra {
 // ──────────────────────────────────────────────
 
 pub mod process;
-
-// ──────────────────────────────────────────────
-// Alloc support for no_std + alloc
-// ──────────────────────────────────────────────
-
-extern crate alloc;
 
 // ──────────────────────────────────────────────
 // Public Re-exports
@@ -462,10 +421,10 @@ mod tests {
 
     #[test]
     fn resource_ownership_moves() {
-        let r = Resource::new(42, alloc::vec![1, 2, 3]);
+        let r = Resource::new(42, vec![1, 2, 3]);
         assert_eq!(r.id(), 42);
         let data = r.into_data();
-        assert_eq!(data, alloc::vec![1, 2, 3]);
+        assert_eq!(data, vec![1, 2, 3]);
     }
 
     #[test]
@@ -490,12 +449,12 @@ mod tests {
     #[test]
     fn zero_cost_sacred_map() {
         let data = [1u32, 2, 3, 4];
-        let result: alloc::vec::Vec<_> = data
+        let result: Vec<_> = data
             .iter()
             .sacred_map(|x| x * 2)
             .sacred_map(|x| x + 1)
             .collect();
-        assert_eq!(result, alloc::vec![3, 5, 7, 9]);
+        assert_eq!(result, vec![3, 5, 7, 9]);
     }
 
     #[test]
@@ -515,7 +474,7 @@ mod tests {
     fn classify_returns_rich_information() {
         let c = classify('k');
         assert_eq!(c.class, "vyañjana");
-        assert_eq!(c.sthana, Some(Sthana::Kanthya));
+        assert_eq!(c.sthana, Some(Sthana::Kantha));
         assert_eq!(c.ghosa, Some(Ghosa::Aghosa));
         assert_eq!(c.prana, Some(Prana::Alpaprana));
     }
