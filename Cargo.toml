@@ -3,9 +3,12 @@ name = "tat-tvam-asi"
 version = "0.1.0"
 edition = "2021"
 authors = ["Zhanying Jia <Dayan>"]
-description = "Rust × Sanskrit closed-loop system — Project Tat Tvam Asi"
+description = "Rust × Sanskrit closed-loop system — Project Tat Tvam Asi (彼即汝)"
 license = "MIT"
 repository = "https://github.com/4jb5nkddkb-dot/tat-tvam-asi"
+readme = "README.md"
+keywords = ["rust", "sanskrit", "zero-cost", "ownership", "philosophy"]
+categories = ["rust-patterns", "no-std"]
 
 [dependencies]
 
