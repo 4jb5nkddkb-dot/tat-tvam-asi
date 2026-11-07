@@ -55,7 +55,7 @@ The highest emptiness (Śūnyatā) gives birth to marvelous form. Grand, elegant
 | `sunyata`         | Zero-Cost Abstraction          | ✅ Core     |
 | `mantra`          | Sanskrit-Rust Macro + Phoneme  | ✅ Phase 1  |
 | `process`         | Integrated SacredProcess       | ✅ Core     |
-| `examples`        | Full demonstration             | ✅          |
+| `examples`        | Full + Phoneme demos           | ✅          |
 | CI (GitHub Actions) | test + clippy                | ✅          |
 
 ## Roadmap
@@ -75,6 +75,7 @@ Map Pāṇinian phonology and grammar rules into Rust macros and type constraint
 cargo test
 cargo run
 cargo run --example closed_loops
+cargo run --example phoneme_classify
 cargo clippy -- -D warnings
 ```
 
