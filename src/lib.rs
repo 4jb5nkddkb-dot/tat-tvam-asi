@@ -37,12 +37,6 @@ pub mod law {
             self.data
         }
     }
-
-    impl Drop for Resource {
-        fn drop(&mut self) {
-            // Explicit end of life. No residual karma.
-        }
-    }
 }
 
 // ──────────────────────────────────────────────
@@ -205,16 +199,15 @@ pub mod sunyata {
 pub mod mantra {
     use core::marker::PhantomData;
 
+    /// Exhaustive match helper.
+    ///
+    /// Call as:
+    /// `exhaustive!(match (value) { A => ..., B => ... })`
+    /// Parentheses around the scrutinee are required by macro matcher rules.
     #[macro_export]
     macro_rules! exhaustive {
-        (
-            match $val:expr {
-                $($pat:pat => $body:expr),+ $(,)?
-            }
-        ) => {
-            match $val {
-                $($pat => $body),+
-            }
+        (match ($val:expr) { $($arms:tt)* }) => {
+            match ($val) { $($arms)* }
         };
     }
 
