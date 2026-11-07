@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Test & Clippy
+    name: Fmt, Test & Clippy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,7 +16,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          components: clippy
+          components: clippy, rustfmt
 
       - name: Cache cargo
         uses: actions/cache@v4
@@ -26,6 +26,9 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cargo fmt
+        run: cargo fmt --all -- --check
 
       - name: Cargo test
         run: cargo test --all-targets
