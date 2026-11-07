@@ -1,4 +1,4 @@
-//! Phase 1 demonstration: type-level phoneme categories and classification.
+//! Phase 1 demonstration: expanded phoneme classification.
 //!
 //! Run with:
 //! ```bash
@@ -8,26 +8,27 @@
 use tat_tvam_asi::mantra::{classify, Phoneme, Svara, Vyanjana, Antastha, Usman};
 
 fn main() {
-    println!("🪐 Phase 1 — Phoneme Categories (Pāṇinian-inspired)\n");
+    println!("🪐 Phase 1 — Expanded Phoneme Categories\n");
 
-    // Typed phonemes — class is part of the type
     let a = Phoneme::<Svara>::new('a');
     let k = Phoneme::<Vyanjana>::new('k');
     let y = Phoneme::<Antastha>::new('y');
     let s = Phoneme::<Usman>::new('ś');
 
     println!("Typed phonemes:");
-    println!("  '{}' → class '{}'", a.symbol(), a.class_name());
-    println!("  '{}' → class '{}'", k.symbol(), k.class_name());
-    println!("  '{}' → class '{}'", y.symbol(), y.class_name());
-    println!("  '{}' → class '{}'", s.symbol(), s.class_name());
+    println!("  '{}' → {}", a.symbol(), a.class_name());
+    println!("  '{}' → {}", k.symbol(), k.class_name());
+    println!("  '{}' → {}", y.symbol(), y.class_name());
+    println!("  '{}' → {}", s.symbol(), s.class_name());
 
-    println!("\nRuntime classification (closed match):");
-    let samples = ['a', 'i', 'k', 't', 'y', 'r', 'ś', 'h', 'x'];
-    for ch in samples {
-        println!("  '{}' → {}", ch, classify(ch));
+    println!("\nRich classification:");
+    for ch in ['a', 'k', 'g', 'y', 'ś', 'x'] {
+        let c = classify(ch);
+        println!(
+            "  '{}' → class={}, sthana={:?}, prayatna={:?}, ghosa={:?}, prana={:?}",
+            ch, c.class, c.sthana, c.prayatna, c.ghosa, c.prana
+        );
     }
 
-    println!("\nZero-cost: the class marker adds no runtime size beyond the char.");
-    println!("Tat Tvam Asi.");
+    println!("\nTat Tvam Asi.");
 }
