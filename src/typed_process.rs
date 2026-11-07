@@ -122,10 +122,7 @@ mod tests {
 
     #[test]
     fn execute_only_on_execute_state() {
-        let p = TypedProcess::new(2, 5u32)
-            .advance()
-            .advance()
-            .advance();
+        let p = TypedProcess::new(2, 5u32).advance().advance().advance();
         let (p, out) = p.execute(|x| x + 1);
         assert_eq!(out, 6);
         let _ = p.advance().into_input();

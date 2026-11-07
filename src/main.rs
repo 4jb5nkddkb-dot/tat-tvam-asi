@@ -19,7 +19,10 @@ fn main() {
         let resource = Resource::new(1, b"namaste".to_vec());
         println!("  Resource born with id: {}", resource.id());
         let data = resource.into_data();
-        println!("  Resource consumed. Data: {:?}", String::from_utf8_lossy(&data));
+        println!(
+            "  Resource consumed. Data: {:?}",
+            String::from_utf8_lossy(&data)
+        );
     }
     println!("  Scope ended. Drop executed. No residual karma.\n");
 
@@ -53,13 +56,15 @@ fn main() {
     // ─── Integrated: SacredProcess ────────────────────────────────
     println!("─── Integrated: SacredProcess ───");
     let mut proc = SacredProcess::new(108, 42u32);
-    println!("  Process {} started at phase {:?}", proc.id(), proc.phase());
+    println!(
+        "  Process {} started at phase {:?}",
+        proc.id(),
+        proc.phase()
+    );
 
     while !proc.is_complete() {
         let current = proc.phase();
-        proc.step(|input, phase| {
-            input.wrapping_mul(2).wrapping_add(phase as u32)
-        });
+        proc.step(|input, phase| input.wrapping_mul(2).wrapping_add(phase as u32));
         println!(
             "  phase {:?} → cosmic {:?}",
             current,

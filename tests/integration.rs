@@ -41,7 +41,11 @@ fn essence_form_manifests() {
 #[test]
 fn sunyata_sacred_map_pipeline() {
     let xs = [1u32, 2, 3];
-    let out: Vec<_> = xs.iter().sacred_map(|x| x + 1).sacred_map(|x| x * 2).collect();
+    let out: Vec<_> = xs
+        .iter()
+        .sacred_map(|x| x + 1)
+        .sacred_map(|x| x * 2)
+        .collect();
     assert_eq!(out, vec![4, 6, 8]);
 }
 

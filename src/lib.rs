@@ -56,8 +56,8 @@ pub mod law {
 
 #[cfg(feature = "alloc")]
 pub mod essence {
-    use alloc::string::String;
     use alloc::format;
+    use alloc::string::String;
 
     pub trait Essence {
         fn name(&self) -> &'static str;
@@ -322,13 +322,15 @@ pub mod mantra {
 
     pub fn classify(symbol: char) -> Classification {
         match symbol {
-            'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => Classification {
-                class: Svara::NAME,
-                sthana: None,
-                prayatna: Prayatna::Svara,
-                ghosa: None,
-                prana: None,
-            },
+            'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => {
+                Classification {
+                    class: Svara::NAME,
+                    sthana: None,
+                    prayatna: Prayatna::Svara,
+                    ghosa: None,
+                    prana: None,
+                }
+            }
             'k' => Classification {
                 class: Vyanjana::NAME,
                 sthana: Some(Sthana::Kantha),

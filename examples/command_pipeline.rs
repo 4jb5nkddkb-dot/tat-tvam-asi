@@ -25,7 +25,9 @@ enum Response {
     Pong,
     Value(Option<String>),
     Ok,
-    Stats { entries: usize },
+    Stats {
+        entries: usize,
+    },
     #[allow(dead_code)]
     Error(&'static str),
 }

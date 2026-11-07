@@ -5,7 +5,7 @@
 //! cargo run --example phoneme_classify
 //! ```
 
-use tat_tvam_asi::mantra::{classify, Phoneme, Svara, Vyanjana, Antastha, Usman};
+use tat_tvam_asi::mantra::{classify, Antastha, Phoneme, Svara, Usman, Vyanjana};
 
 fn main() {
     println!("🪐 Phase 1 — Expanded Phoneme Categories\n");
