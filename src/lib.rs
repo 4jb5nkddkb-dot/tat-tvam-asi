@@ -342,12 +342,19 @@ pub mod mantra {
 }
 
 // ──────────────────────────────────────────────
+// SacredProcess — integrated closed-loop unit
+// ──────────────────────────────────────────────
+
+pub mod process;
+
+// ──────────────────────────────────────────────
 // Public Re-exports
 // ──────────────────────────────────────────────
 
 pub use essence::{Essence, Form, Moksha, Om};
 pub use law::Resource;
 pub use mantra::{Antastha, Phoneme, PhonemeClass, Svara, Usman, Vyanjana};
+pub use process::{phase_to_state, Phase, SacredProcess};
 pub use sunyata::{PhantomEssence, SacredIterator, SacredMap};
 pub use vision::State;
 
