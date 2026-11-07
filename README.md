@@ -15,6 +15,7 @@ Unite **Sanskrit** with **Rust** into an ultimate closed loop — a logic that i
 - World-impact vision (calibrated) → [docs/VISION.md](docs/VISION.md)
 - Coding style under the dual anchors → [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md)
 - Architecture → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- Status & evaluation snapshot → [docs/STATUS.md](docs/STATUS.md)
 
 ## Dual Anchors
 
@@ -32,7 +33,7 @@ Unite **Sanskrit** with **Rust** into an ultimate closed loop — a logic that i
 2. **Trait & Representation** — Name/Form separation, exhaustive states  
 3. **Śūnyatā & Zero-Cost** — Grand abstractions that erase at compile time
 
-## Current Implementation
+## Current Implementation (v0.1.0)
 
 | Module / Item        | Role                                      | Status |
 |----------------------|-------------------------------------------|--------|
@@ -43,14 +44,8 @@ Unite **Sanskrit** with **Rust** into an ultimate closed loop — a logic that i
 | `mantra`             | Macros + expanded phonology               | ✅     |
 | `process`            | Integrated SacredProcess                  | ✅     |
 | Style Guide          | Concrete coding rules                     | ✅     |
+| Unit + integration tests | `src` + `tests/integration.rs`        | ✅     |
 | CI                   | test + clippy                             | ✅     |
-
-## Phase Status
-
-- **Phase A (Constraints)** — tighter process semantics, clippy baseline, style guide  
-- **Phase B (Sanskrit-Rust)** — expanded phoneme dimensions (`Sthana`, `Ghosa`, `Prana`…)  
-- **Phase C (Reusable patterns)** — SacredProcess as the combined unit  
-- **Phase D (Docs & practice)** — VISION / ARCHITECTURE / STYLE_GUIDE landed
 
 ## Build & Run
 
@@ -65,4 +60,5 @@ cargo clippy -- -D warnings
 ---
 
 **Chief Architect**: Zhanying Jia / Dayan Jia  
-**License**: MIT
+**License**: MIT  
+**Baseline**: v0.1.0 converged
