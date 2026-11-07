@@ -26,6 +26,7 @@ enum Response {
     Value(Option<String>),
     Ok,
     Stats { entries: usize },
+    #[allow(dead_code)]
     Error(&'static str),
 }
 
@@ -42,7 +43,6 @@ impl Store {
     }
 
     fn handle(&mut self, cmd: Command) -> Response {
-        // Dayan: every command is named; no wildcard.
         match cmd {
             Command::Ping => Response::Pong,
             Command::Get { key } => Response::Value(self.map.get(&key).cloned()),
@@ -96,7 +96,6 @@ fn main() {
     ];
 
     for (i, line) in script.iter().enumerate() {
-        // Type-state path: only Execute may run the handler side-effect boundary.
         let cmd = match parse_command(line) {
             Ok(c) => c,
             Err(e) => {
@@ -105,18 +104,15 @@ fn main() {
             }
         };
 
-        // Demonstrate typed pipeline around pure validation / logging boundary.
         let label = run_typed_pipeline(i as u64, line.to_string(), |s| s.len());
-
         let response = store.handle(cmd);
         println!("[{i}] len={label} <- {line:?} -> {response:?}");
     }
 
-    // Explicit walk of TypedProcess for one request (shows state sequence).
     let p = TypedProcess::new(99, Command::Ping);
-    let p = p.advance().advance().advance(); // → Execute
+    let p = p.advance().advance().advance();
     let (p, resp) = p.execute(|_| Response::Pong);
-    let _done = p.advance(); // → Update
+    let _done = p.advance();
     println!("\nTypedProcess single-shot: {resp:?}");
 
     println!("\nTat Tvam Asi.");
