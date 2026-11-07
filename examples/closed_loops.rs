@@ -1,4 +1,4 @@
-//! Integrated demonstration of the three closed loops.
+//! Integrated demonstration of the three closed loops + SacredProcess.
 //!
 //! Run with:
 //! ```bash
@@ -8,6 +8,7 @@
 use tat_tvam_asi::{
     essence::{Essence, Form, Moksha, Om},
     law::Resource,
+    process::{phase_to_state, SacredProcess},
     sunyata::SacredIterator,
     vision::State,
 };
@@ -41,7 +42,6 @@ fn main() {
         println!("  born  → id={}", res.id());
         let payload = res.into_data();
         println!("  moved → {:?}", String::from_utf8_lossy(&payload));
-        // res is gone. Drop will run at scope end.
     }
     println!("  died  → no residual karma\n");
 
@@ -76,15 +76,27 @@ fn main() {
     let data = [1u32, 2, 3, 4, 5, 6, 7, 8];
     let result: Vec<u32> = data
         .iter()
-        .sacred_map(|x| x * x)      // square
-        .sacred_map(|x| x + 1)      // +1
-        .filter(|&x| x % 2 == 1)    // keep odd
+        .sacred_map(|x| x * x)
+        .sacred_map(|x| x + 1)
+        .filter(|&x| x % 2 == 1)
         .collect();
 
     println!("  input  : {:?}", data);
     println!("  sacred : {:?}", result);
     println!("  (all adapters erased at compile time)\n");
 
-    println!("Three closed loops demonstrated in one binary.");
+    // ── Integrated SacredProcess ──────────────────────────────────
+    println!("[Integrated] SacredProcess");
+    let mut proc = SacredProcess::new(1, 10u32);
+    while !proc.is_complete() {
+        let phase = proc.phase();
+        proc.step(|input, p| input.wrapping_add(p as u32 * 3));
+        println!("  {:?} → cosmic {:?}", phase, phase_to_state(phase));
+    }
+    if let Some(out) = proc.into_output() {
+        println!("  final output: {}", out);
+    }
+
+    println!("\nThree closed loops + SacredProcess demonstrated.");
     println!("Tat Tvam Asi.");
 }
