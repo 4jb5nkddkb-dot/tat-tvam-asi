@@ -4,7 +4,7 @@
 use tat_tvam_asi::{
     essence::{Essence, Form, Moksha, Om},
     law::Resource,
-    process::{phase_to_state, Phase, SacredProcess},
+    process::{phase_to_state, SacredProcess},
     sunyata::SacredIterator,
     vision::State,
 };
@@ -58,7 +58,6 @@ fn main() {
     while !proc.is_complete() {
         let current = proc.phase();
         proc.step(|input, phase| {
-            // Pure function: no side effects, no hidden state
             input.wrapping_mul(2).wrapping_add(phase as u32)
         });
         println!(
