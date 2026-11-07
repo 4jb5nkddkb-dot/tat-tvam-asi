@@ -5,6 +5,7 @@ use tat_tvam_asi::{
     essence::{Essence, Form, Om},
     law::Resource,
     process::{phase_to_state, Phase, SacredProcess},
+    run_typed_pipeline_owned,
     sunyata::SacredIterator,
     vision::State,
     Ghosa, Prana, Sthana,
@@ -89,4 +90,13 @@ fn mantra_classify_core_sounds() {
     assert_eq!(k.sthana, Some(Sthana::Kantha));
     assert_eq!(k.ghosa, Some(Ghosa::Aghosa));
     assert_eq!(k.prana, Some(Prana::Alpaprana));
+}
+
+#[test]
+fn typed_pipeline_owned_reaches_update() {
+    let (done, out) = run_typed_pipeline_owned(9, 100u32, |x| x / 2);
+    assert_eq!(out, 50);
+    assert_eq!(done.phase_name(), "Update");
+    assert_eq!(done.cosmic_state(), State::Liberated);
+    assert_eq!(done.into_input(), 100);
 }
