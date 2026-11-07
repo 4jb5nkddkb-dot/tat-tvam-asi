@@ -399,7 +399,9 @@ pub use mantra::{
 };
 pub use process::{phase_to_state, Phase, SacredProcess};
 pub use sunyata::{PhantomEssence, SacredIterator, SacredMap};
-pub use typed_process::{run_typed_pipeline, TypedProcess};
+pub use typed_process::{
+    run_typed_pipeline, run_typed_pipeline_owned, PhaseState, TypedProcess,
+};
 pub use vision::State;
 
 // ────────────────────────────────────────────────
@@ -484,5 +486,13 @@ mod tests {
     fn typed_pipeline_runs() {
         let out = run_typed_pipeline(1, 7u32, |x| x * 2);
         assert_eq!(out, 14);
+    }
+
+    #[test]
+    fn typed_pipeline_owned_finishes_liberated() {
+        let (done, out) = run_typed_pipeline_owned(2, 3u32, |x| x + 1);
+        assert_eq!(out, 4);
+        assert_eq!(done.phase_name(), "Update");
+        assert_eq!(done.cosmic_state(), State::Liberated);
     }
 }
