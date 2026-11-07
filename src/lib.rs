@@ -21,9 +21,9 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────────
 // 闭环一 · 生灭因果闭环 (Karma & RAII) — requires alloc
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────────
 
 #[cfg(feature = "alloc")]
 pub mod law {
@@ -50,9 +50,9 @@ pub mod law {
     }
 }
 
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────────
 // 闭环二 · 本质变现闭环 — requires alloc (String)
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────────
 
 #[cfg(feature = "alloc")]
 pub mod essence {
@@ -116,9 +116,9 @@ pub mod essence {
     }
 }
 
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────────
 // Vision / Sunyata / Mantra / Process — core
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────────
 
 pub mod vision {
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -384,9 +384,9 @@ pub mod mantra {
 pub mod process;
 pub mod typed_process;
 
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────────
 // Public Re-exports
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────────
 
 #[cfg(feature = "alloc")]
 pub use essence::{Essence, Form, Moksha, Om};
@@ -402,9 +402,9 @@ pub use sunyata::{PhantomEssence, SacredIterator, SacredMap};
 pub use typed_process::{run_typed_pipeline, TypedProcess};
 pub use vision::State;
 
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────────
 // Tests
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────────
 
 #[cfg(test)]
 mod tests {
@@ -440,6 +440,7 @@ mod tests {
         assert!(om.manifest().contains("primordial"));
     }
 
+    #[cfg(feature = "alloc")]
     #[test]
     fn zero_cost_sacred_map() {
         let data = [1u32, 2, 3, 4];
