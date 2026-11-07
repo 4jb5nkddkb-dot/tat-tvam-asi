@@ -35,3 +35,21 @@ jobs:
 
       - name: Cargo clippy
         run: cargo clippy --all-targets -- -D warnings
+
+  no-std:
+    name: no_std / alloc features
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Core only (no default features)
+        run: cargo check --no-default-features --all-targets
+
+      - name: Alloc without std
+        run: cargo check --no-default-features --features alloc --all-targets
+
+      - name: Clippy core-only
+        run: cargo clippy --no-default-features --all-targets -- -D warnings
