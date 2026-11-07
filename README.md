@@ -47,20 +47,22 @@ The highest emptiness (Śūnyatā) gives birth to marvelous form. Grand, elegant
 
 ## Current Implementation
 
-| Module       | Anchor / Loop              | Status      |
-|--------------|----------------------------|-------------|
-| `law`        | Zhanying · Karma & RAII    | ✅ Core     |
-| `vision`     | Dayan · Exhaustive Match   | ✅ Core     |
-| `essence`    | Trait & Representation     | ✅ Core     |
-| `sunyata`    | Zero-Cost Abstraction      | ✅ Core     |
-| `mantra`     | Sanskrit-Rust Macro PoC    | ✅ Phase 1  |
-| `examples`   | Integrated demonstration   | ✅          |
+| Module / Item     | Anchor / Loop                  | Status      |
+|-------------------|--------------------------------|-------------|
+| `law`             | Zhanying · Karma & RAII        | ✅ Core     |
+| `vision`          | Dayan · Exhaustive Match       | ✅ Core     |
+| `essence`         | Trait & Representation         | ✅ Core     |
+| `sunyata`         | Zero-Cost Abstraction          | ✅ Core     |
+| `mantra`          | Sanskrit-Rust Macro + Phoneme  | ✅ Phase 1  |
+| `process`         | Integrated SacredProcess       | ✅ Core     |
+| `examples`        | Full demonstration             | ✅          |
+| CI (GitHub Actions) | test + clippy                | ✅          |
 
 ## Roadmap
 
 ### Phase 1 — Sanskrit-Rust Compiler Engine (PoC)
 Map Pāṇinian phonology and grammar rules into Rust macros and type constraints.  
-→ *First mantra macros already live in `mantra` module.*
+→ Phoneme categories and mantra macros are live.
 
 ### Phase 2 — Sanskritization of Existing Codebases
 - Eliminate all compromising `.clone()`
@@ -73,6 +75,7 @@ Map Pāṇinian phonology and grammar rules into Rust macros and type constraint
 cargo test
 cargo run
 cargo run --example closed_loops
+cargo clippy -- -D warnings
 ```
 
 ---
