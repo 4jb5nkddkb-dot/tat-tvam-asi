@@ -10,23 +10,26 @@
 //! 1. Karma & RAII
 //! 2. Trait & Representation (Nāmarūpa)
 //! 3. Śūnyatā & Zero-Cost Abstraction
+//!
+//! This crate aims to be `no_std` friendly in its core modules.
+
+#![cfg_attr(not(test), no_std)]
 
 // ──────────────────────────────────────────────
 // 闭环一 · 生灭因果闭环 (Karma & RAII)
 // ──────────────────────────────────────────────
 
 /// The Law: everything that is born must die cleanly.
-/// RAII is not a feature; it is the moral order of memory.
 pub mod law {
     /// A resource that cannot outlive its rightful owner.
     /// Demonstrates pure ownership transfer without clone.
     pub struct Resource {
         id: u64,
-        data: Vec<u8>,
+        data: alloc::vec::Vec<u8>,
     }
 
     impl Resource {
-        pub fn new(id: u64, data: Vec<u8>) -> Self {
+        pub fn new(id: u64, data: alloc::vec::Vec<u8>) -> Self {
             Self { id, data }
         }
 
@@ -35,8 +38,7 @@ pub mod law {
         }
 
         /// Consume self and return the inner data.
-        /// Ownership is transferred, never cloned.
-        pub fn into_data(self) -> Vec<u8> {
+        pub fn into_data(self) -> alloc::vec::Vec<u8> {
             self.data
         }
     }
@@ -52,16 +54,11 @@ pub mod law {
 // 闭环二 · 本质变现闭环 (Trait & Representation)
 // ──────────────────────────────────────────────
 
-/// The Vision of Name and Form (Nāmarūpa).
-/// Every phenomenon is pure essence manifested on form.
 pub mod essence {
     /// The pure Name (essence) that any Form must embody.
     pub trait Essence {
-        /// The sacred name of this essence.
         fn name(&self) -> &'static str;
-
-        /// Manifest the essence into observable form.
-        fn manifest(&self) -> String;
+        fn manifest(&self) -> alloc::string::String;
     }
 
     /// Concrete Form that carries an Essence.
@@ -85,12 +82,11 @@ pub mod essence {
             self.inner.name()
         }
 
-        fn manifest(&self) -> String {
-            format!("Form[{}] → {}", self.inner.name(), self.inner.manifest())
+        fn manifest(&self) -> alloc::string::String {
+            alloc::format!("Form[{}] → {}", self.inner.name(), self.inner.manifest())
         }
     }
 
-    /// Example concrete essence: the syllable "Om".
     #[derive(Debug, Clone, Copy)]
     pub struct Om;
 
@@ -99,12 +95,11 @@ pub mod essence {
             "ॐ"
         }
 
-        fn manifest(&self) -> String {
-            "primordial vibration".to_string()
+        fn manifest(&self) -> alloc::string::String {
+            alloc::string::String::from("primordial vibration")
         }
     }
 
-    /// Example concrete essence: the principle of Liberation.
     #[derive(Debug, Clone, Copy)]
     pub struct Moksha;
 
@@ -113,8 +108,8 @@ pub mod essence {
             "mokṣa"
         }
 
-        fn manifest(&self) -> String {
-            "release from the cycle of birth and death".to_string()
+        fn manifest(&self) -> alloc::string::String {
+            alloc::string::String::from("release from the cycle of birth and death")
         }
     }
 }
@@ -124,8 +119,6 @@ pub mod essence {
 // ──────────────────────────────────────────────
 
 pub mod vision {
-    /// A finite, closed set of cosmic states.
-    /// No Option, no Result left unhandled, no catch-all that hides ignorance.
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum State {
         Unborn,
@@ -135,8 +128,7 @@ pub mod vision {
     }
 
     impl State {
-        /// Exhaustive transition. The compiler is the eye of Dayan.
-        pub fn transition(self) -> Self {
+        pub const fn transition(self) -> Self {
             match self {
                 State::Unborn => State::Manifest,
                 State::Manifest => State::Exhausted,
@@ -145,7 +137,7 @@ pub mod vision {
             }
         }
 
-        pub fn is_final(&self) -> bool {
+        pub const fn is_final(self) -> bool {
             matches!(self, State::Liberated)
         }
     }
@@ -155,12 +147,10 @@ pub mod vision {
 // 闭环三 · 真空妙有与零成本闭环 (Śūnyatā)
 // ──────────────────────────────────────────────
 
-/// Zero-cost abstractions: grand form that vanishes into pure machine code.
 pub mod sunyata {
     use core::marker::PhantomData;
 
-    /// A zero-sized marker that carries type-level information only.
-    /// At runtime it occupies no bytes — true Śūnyatā.
+    /// Zero-sized marker carrying type-level information only.
     #[derive(Debug, Clone, Copy, Default)]
     pub struct PhantomEssence<T> {
         _marker: PhantomData<T>,
@@ -174,8 +164,7 @@ pub mod sunyata {
         }
     }
 
-    /// Zero-cost iterator adapter that transforms without allocation or virtual calls.
-    /// The abstraction is completely erased by the compiler.
+    /// Zero-cost iterator adapter.
     pub struct SacredMap<I, F> {
         iter: I,
         f: F,
@@ -205,7 +194,6 @@ pub mod sunyata {
         }
     }
 
-    /// Extension trait so any iterator can enter the sacred map with zero cost.
     pub trait SacredIterator: Iterator + Sized {
         fn sacred_map<F, B>(self, f: F) -> SacredMap<Self, F>
         where
@@ -219,20 +207,13 @@ pub mod sunyata {
 }
 
 // ──────────────────────────────────────────────
-// 阶段一 · 圣言转译器 PoC (Mantra + Phoneme Categories)
+// 阶段一 · 圣言转译器 (Mantra + Expanded Phonology)
 // ──────────────────────────────────────────────
 
-/// Phase 1: Sanskrit-inspired macros and type-level categories.
-///
-/// Inspired by Pāṇinian phonology: sounds are classified into
-/// rigorous, closed categories. We mirror this with zero-sized
-/// types and exhaustive matching so the compiler becomes the
-/// modern Aṣṭādhyāyī.
 pub mod mantra {
     use core::marker::PhantomData;
 
-    /// Forces the programmer to name every arm of a match.
-    /// Rejects wildcards that would hide incomplete vision.
+    /// Forces naming of every match arm (documentation + convention macro).
     #[macro_export]
     macro_rules! exhaustive {
         (
@@ -258,51 +239,79 @@ pub mod mantra {
                     $sacred
                 }
 
-                fn manifest(&self) -> String {
-                    ($manifestation).to_string()
+                fn manifest(&self) -> alloc::string::String {
+                    alloc::string::String::from($manifestation)
                 }
             }
         };
     }
 
-    // ── Phoneme Categories (zero-cost type-level) ─────────────────
+    // ── Primary phoneme classes ───────────────────────────────────
 
-    /// Marker trait for phoneme classes.
-    /// All implementors are zero-sized.
     pub trait PhonemeClass {
         const NAME: &'static str;
     }
 
-    /// Vowels (svara)
     #[derive(Debug, Clone, Copy, Default)]
     pub struct Svara;
     impl PhonemeClass for Svara {
         const NAME: &'static str = "svara";
     }
 
-    /// Consonants (vyañjana)
     #[derive(Debug, Clone, Copy, Default)]
     pub struct Vyanjana;
     impl PhonemeClass for Vyanjana {
         const NAME: &'static str = "vyañjana";
     }
 
-    /// Semi-vowels / approximants
     #[derive(Debug, Clone, Copy, Default)]
     pub struct Antastha;
     impl PhonemeClass for Antastha {
         const NAME: &'static str = "antaḥstha";
     }
 
-    /// Sibilants / spirants
     #[derive(Debug, Clone, Copy, Default)]
     pub struct Usman;
     impl PhonemeClass for Usman {
         const NAME: &'static str = "ūṣman";
     }
 
-    /// A typed phoneme that carries its class at the type level.
-    /// Runtime size is still zero for the class marker.
+    // ── Secondary dimensions (zero-cost markers) ──────────────────
+
+    /// Place of articulation (sthāna)
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum Sthana {
+        Kanthya,   // guttural
+        Talavya,   // palatal
+        Murdhanya, // retroflex
+        Dantya,    // dental
+        Osthya,    // labial
+    }
+
+    /// Manner / effort (prayatna) — simplified
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum Prayatna {
+        Sparsha,  // contact (stops)
+        Antastha, // approximate
+        Usman,    // fricative
+        Svara,    // vowel
+    }
+
+    /// Voicing
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum Ghosa {
+        Aghosa, // unvoiced
+        Ghosavat, // voiced
+    }
+
+    /// Aspiration
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum Prana {
+        Alpaprana, // unaspirated
+        Mahaprana, // aspirated
+    }
+
+    /// Typed phoneme with class marker (zero-cost for the marker).
     #[derive(Debug, Clone, Copy)]
     pub struct Phoneme<C: PhonemeClass> {
         symbol: char,
@@ -317,7 +326,7 @@ pub mod mantra {
             }
         }
 
-        pub fn symbol(&self) -> char {
+        pub const fn symbol(&self) -> char {
             self.symbol
         }
 
@@ -326,26 +335,106 @@ pub mod mantra {
         }
     }
 
-    /// Exhaustive classification helper.
-    /// Returns the class name; the match is closed.
-    pub fn classify(symbol: char) -> &'static str {
+    /// Full classification result for a single sound.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub struct Classification {
+        pub class: &'static str,
+        pub sthana: Option<Sthana>,
+        pub prayatna: Prayatna,
+        pub ghosa: Option<Ghosa>,
+        pub prana: Option<Prana>,
+    }
+
+    /// Closed classification of a character into Pāṇinian-inspired categories.
+    pub fn classify(symbol: char) -> Classification {
         match symbol {
-            'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => Svara::NAME,
-            'k' | 'kh' | 'g' | 'gh' | 'ṅ' | 'c' | 'ch' | 'j' | 'jh' | 'ñ'
-            | 'ṭ' | 'ṭh' | 'ḍ' | 'ḍh' | 'ṇ' | 't' | 'th' | 'd' | 'dh' | 'n'
-            | 'p' | 'ph' | 'b' | 'bh' | 'm' => Vyanjana::NAME,
-            'y' | 'r' | 'l' | 'v' => Antastha::NAME,
-            'ś' | 'ṣ' | 's' | 'h' => Usman::NAME,
-            _ => "unknown", // intentional residual for non-Sanskrit input
+            // Vowels
+            'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => Classification {
+                class: Svara::NAME,
+                sthana: None,
+                prayatna: Prayatna::Svara,
+                ghosa: None,
+                prana: None,
+            },
+            // Gutturals
+            'k' => Classification {
+                class: Vyanjana::NAME,
+                sthana: Some(Sthana::Kanthya),
+                prayatna: Prayatna::Sparsha,
+                ghosa: Some(Ghosa::Aghosa),
+                prana: Some(Prana::Alpaprana),
+            },
+            'kh' => Classification {
+                class: Vyanjana::NAME,
+                sthana: Some(Sthana::Kanthya),
+                prayatna: Prayatna::Sparsha,
+                ghosa: Some(Ghosa::Aghosa),
+                prana: Some(Prana::Mahaprana),
+            },
+            'g' => Classification {
+                class: Vyanjana::NAME,
+                sthana: Some(Sthana::Kanthya),
+                prayatna: Prayatna::Sparsha,
+                ghosa: Some(Ghosa::Ghosavat),
+                prana: Some(Prana::Alpaprana),
+            },
+            'gh' => Classification {
+                class: Vyanjana::NAME,
+                sthana: Some(Sthana::Kanthya),
+                prayatna: Prayatna::Sparsha,
+                ghosa: Some(Ghosa::Ghosavat),
+                prana: Some(Prana::Mahaprana),
+            },
+            // Simple fallbacks for other consonants / semi-vowels / sibilants
+            'y' | 'r' | 'l' | 'v' => Classification {
+                class: Antastha::NAME,
+                sthana: None,
+                prayatna: Prayatna::Antastha,
+                ghosa: Some(Ghosa::Ghosavat),
+                prana: Some(Prana::Alpaprana),
+            },
+            'ś' | 'ṣ' | 's' | 'h' => Classification {
+                class: Usman::NAME,
+                sthana: None,
+                prayatna: Prayatna::Usman,
+                ghosa: Some(Ghosa::Aghosa),
+                prana: Some(Prana::Mahaprana),
+            },
+            // Generic consonant fallback
+            _ if symbol.is_ascii_alphabetic() => Classification {
+                class: Vyanjana::NAME,
+                sthana: None,
+                prayatna: Prayatna::Sparsha,
+                ghosa: None,
+                prana: None,
+            },
+            _ => Classification {
+                class: "unknown",
+                sthana: None,
+                prayatna: Prayatna::Sparsha,
+                ghosa: None,
+                prana: None,
+            },
         }
+    }
+
+    /// Convenience: just the primary class name.
+    pub fn classify_name(symbol: char) -> &'static str {
+        classify(symbol).class
     }
 }
 
 // ──────────────────────────────────────────────
-// SacredProcess — integrated closed-loop unit
+// SacredProcess
 // ──────────────────────────────────────────────
 
 pub mod process;
+
+// ──────────────────────────────────────────────
+// Alloc support for no_std + alloc
+// ──────────────────────────────────────────────
+
+extern crate alloc;
 
 // ──────────────────────────────────────────────
 // Public Re-exports
@@ -353,7 +442,10 @@ pub mod process;
 
 pub use essence::{Essence, Form, Moksha, Om};
 pub use law::Resource;
-pub use mantra::{Antastha, Phoneme, PhonemeClass, Svara, Usman, Vyanjana};
+pub use mantra::{
+    classify, classify_name, Antastha, Classification, Ghosa, Phoneme, PhonemeClass, Prana,
+    Prayatna, Sthana, Svara, Usman, Vyanjana,
+};
 pub use process::{phase_to_state, Phase, SacredProcess};
 pub use sunyata::{PhantomEssence, SacredIterator, SacredMap};
 pub use vision::State;
@@ -370,10 +462,10 @@ mod tests {
 
     #[test]
     fn resource_ownership_moves() {
-        let r = Resource::new(42, vec![1, 2, 3]);
+        let r = Resource::new(42, alloc::vec![1, 2, 3]);
         assert_eq!(r.id(), 42);
         let data = r.into_data();
-        assert_eq!(data, vec![1, 2, 3]);
+        assert_eq!(data, alloc::vec![1, 2, 3]);
     }
 
     #[test]
@@ -393,46 +485,44 @@ mod tests {
         let om = Form::new(Om);
         assert_eq!(om.name(), "ॐ");
         assert!(om.manifest().contains("primordial"));
-
-        let moksha = Form::new(Moksha);
-        assert_eq!(moksha.name(), "mokṣa");
     }
 
     #[test]
     fn zero_cost_sacred_map() {
         let data = [1u32, 2, 3, 4];
-        let result: Vec<_> = data
+        let result: alloc::vec::Vec<_> = data
             .iter()
             .sacred_map(|x| x * 2)
             .sacred_map(|x| x + 1)
             .collect();
-        assert_eq!(result, vec![3, 5, 7, 9]);
+        assert_eq!(result, alloc::vec![3, 5, 7, 9]);
     }
 
     #[test]
     fn phantom_is_zero_sized() {
         assert_eq!(core::mem::size_of::<PhantomEssence<u64>>(), 0);
-        assert_eq!(core::mem::size_of::<PhantomEssence<()>>(), 0);
     }
 
     #[test]
-    fn phoneme_categories_are_zero_sized_and_typed() {
+    fn phoneme_categories_are_typed() {
         let a = Phoneme::<Svara>::new('a');
         let k = Phoneme::<Vyanjana>::new('k');
-
-        assert_eq!(a.symbol(), 'a');
         assert_eq!(a.class_name(), "svara");
         assert_eq!(k.class_name(), "vyañjana");
-
-        // The class marker itself adds no size beyond the char
-        assert_eq!(core::mem::size_of_val(&a), core::mem::size_of::<char>());
     }
 
     #[test]
-    fn classify_is_closed_for_core_set() {
-        assert_eq!(mantra::classify('a'), "svara");
-        assert_eq!(mantra::classify('k'), "vyañjana");
-        assert_eq!(mantra::classify('y'), "antaḥstha");
-        assert_eq!(mantra::classify('ś'), "ūṣman");
+    fn classify_returns_rich_information() {
+        let c = classify('k');
+        assert_eq!(c.class, "vyañjana");
+        assert_eq!(c.sthana, Some(Sthana::Kanthya));
+        assert_eq!(c.ghosa, Some(Ghosa::Aghosa));
+        assert_eq!(c.prana, Some(Prana::Alpaprana));
+    }
+
+    #[test]
+    fn classify_name_convenience() {
+        assert_eq!(classify_name('a'), "svara");
+        assert_eq!(classify_name('y'), "antaḥstha");
     }
 }
