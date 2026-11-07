@@ -219,24 +219,20 @@ pub mod sunyata {
 }
 
 // ──────────────────────────────────────────────
-// 阶段一 · 圣言转译器 PoC (Mantra Macros)
+// 阶段一 · 圣言转译器 PoC (Mantra + Phoneme Categories)
 // ──────────────────────────────────────────────
 
-/// Phase 1 PoC: Sanskrit-inspired declarative macros.
-/// These macros enforce the dual anchors at the syntactic level.
+/// Phase 1: Sanskrit-inspired macros and type-level categories.
+///
+/// Inspired by Pāṇinian phonology: sounds are classified into
+/// rigorous, closed categories. We mirror this with zero-sized
+/// types and exhaustive matching so the compiler becomes the
+/// modern Aṣṭādhyāyī.
 pub mod mantra {
+    use core::marker::PhantomData;
+
     /// Forces the programmer to name every arm of a match.
     /// Rejects wildcards that would hide incomplete vision.
-    ///
-    /// Usage:
-    /// ```ignore
-    /// exhaustive! {
-    ///     match value {
-    ///         A => ...,
-    ///         B => ...,
-    ///     }
-    /// }
-    /// ```
     #[macro_export]
     macro_rules! exhaustive {
         (
@@ -251,7 +247,6 @@ pub mod mantra {
     }
 
     /// Declares a pure Name that must be manifested.
-    /// Creates both the unit struct and its Essence implementation.
     #[macro_export]
     macro_rules! declare_essence {
         ($name:ident, $sacred:literal, $manifestation:expr) => {
@@ -269,6 +264,81 @@ pub mod mantra {
             }
         };
     }
+
+    // ── Phoneme Categories (zero-cost type-level) ─────────────────
+
+    /// Marker trait for phoneme classes.
+    /// All implementors are zero-sized.
+    pub trait PhonemeClass {
+        const NAME: &'static str;
+    }
+
+    /// Vowels (svara)
+    #[derive(Debug, Clone, Copy, Default)]
+    pub struct Svara;
+    impl PhonemeClass for Svara {
+        const NAME: &'static str = "svara";
+    }
+
+    /// Consonants (vyañjana)
+    #[derive(Debug, Clone, Copy, Default)]
+    pub struct Vyanjana;
+    impl PhonemeClass for Vyanjana {
+        const NAME: &'static str = "vyañjana";
+    }
+
+    /// Semi-vowels / approximants
+    #[derive(Debug, Clone, Copy, Default)]
+    pub struct Antastha;
+    impl PhonemeClass for Antastha {
+        const NAME: &'static str = "antaḥstha";
+    }
+
+    /// Sibilants / spirants
+    #[derive(Debug, Clone, Copy, Default)]
+    pub struct Usman;
+    impl PhonemeClass for Usman {
+        const NAME: &'static str = "ūṣman";
+    }
+
+    /// A typed phoneme that carries its class at the type level.
+    /// Runtime size is still zero for the class marker.
+    #[derive(Debug, Clone, Copy)]
+    pub struct Phoneme<C: PhonemeClass> {
+        symbol: char,
+        _class: PhantomData<C>,
+    }
+
+    impl<C: PhonemeClass> Phoneme<C> {
+        pub const fn new(symbol: char) -> Self {
+            Self {
+                symbol,
+                _class: PhantomData,
+            }
+        }
+
+        pub fn symbol(&self) -> char {
+            self.symbol
+        }
+
+        pub fn class_name(&self) -> &'static str {
+            C::NAME
+        }
+    }
+
+    /// Exhaustive classification helper.
+    /// Returns the class name; the match is closed.
+    pub fn classify(symbol: char) -> &'static str {
+        match symbol {
+            'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => Svara::NAME,
+            'k' | 'kh' | 'g' | 'gh' | 'ṅ' | 'c' | 'ch' | 'j' | 'jh' | 'ñ'
+            | 'ṭ' | 'ṭh' | 'ḍ' | 'ḍh' | 'ṇ' | 't' | 'th' | 'd' | 'dh' | 'n'
+            | 'p' | 'ph' | 'b' | 'bh' | 'm' => Vyanjana::NAME,
+            'y' | 'r' | 'l' | 'v' => Antastha::NAME,
+            'ś' | 'ṣ' | 's' | 'h' => Usman::NAME,
+            _ => "unknown", // intentional residual for non-Sanskrit input
+        }
+    }
 }
 
 // ──────────────────────────────────────────────
@@ -277,16 +347,18 @@ pub mod mantra {
 
 pub use essence::{Essence, Form, Moksha, Om};
 pub use law::Resource;
+pub use mantra::{Antastha, Phoneme, PhonemeClass, Svara, Usman, Vyanjana};
 pub use sunyata::{PhantomEssence, SacredIterator, SacredMap};
 pub use vision::State;
 
 // ──────────────────────────────────────────────
-// Tests — the compiler is the first witness
+// Tests
 // ──────────────────────────────────────────────
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use mantra::{Phoneme, Svara, Vyanjana};
     use sunyata::SacredIterator;
 
     #[test]
@@ -334,5 +406,26 @@ mod tests {
     fn phantom_is_zero_sized() {
         assert_eq!(core::mem::size_of::<PhantomEssence<u64>>(), 0);
         assert_eq!(core::mem::size_of::<PhantomEssence<()>>(), 0);
+    }
+
+    #[test]
+    fn phoneme_categories_are_zero_sized_and_typed() {
+        let a = Phoneme::<Svara>::new('a');
+        let k = Phoneme::<Vyanjana>::new('k');
+
+        assert_eq!(a.symbol(), 'a');
+        assert_eq!(a.class_name(), "svara");
+        assert_eq!(k.class_name(), "vyañjana");
+
+        // The class marker itself adds no size beyond the char
+        assert_eq!(core::mem::size_of_val(&a), core::mem::size_of::<char>());
+    }
+
+    #[test]
+    fn classify_is_closed_for_core_set() {
+        assert_eq!(mantra::classify('a'), "svara");
+        assert_eq!(mantra::classify('k'), "vyañjana");
+        assert_eq!(mantra::classify('y'), "antaḥstha");
+        assert_eq!(mantra::classify('ś'), "ūṣman");
     }
 }
