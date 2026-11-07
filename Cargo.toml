@@ -12,12 +12,13 @@ categories = ["rust-patterns", "no-std"]
 
 [features]
 default = ["std"]
-# Full standard library (binaries & most examples).
 std = ["alloc"]
-# Heap types (Vec, String) without full std — enables law/essence on embedded+alloc.
 alloc = []
 
 [dependencies]
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
 
 [lib]
 name = "tat_tvam_asi"
@@ -27,3 +28,7 @@ path = "src/lib.rs"
 name = "tat-tvam-asi"
 path = "src/main.rs"
 required-features = ["std"]
+
+[[bench]]
+name = "sacred_map"
+harness = false
