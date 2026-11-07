@@ -32,7 +32,7 @@ into an ultimate closed loop — a logic that is unborn, undying, and absolutely
 - Mapping: Rust `match` ↔ Sanskrit *Nāmarūpa*
 - Duty: With the eye of the creator, exhaust every state, every branch, every causal chain. Leave no `Null`, no surprise, no unknown.
 
-## Closed Loops
+## Three Closed Loops
 
 ### 1. Karma & RAII — Birth-Death Causal Closure
 Ownership and lifetimes ensure every resource has a determined origin and end. No GC reincarnation cycles. No residual karma.
@@ -40,19 +40,36 @@ Ownership and lifetimes ensure every resource has a determined origin and end. N
 ### 2. Trait & Representation — Essence Manifestation Closure
 Strong typing + Traits + Enums turn business reality into pure essence (Name) manifested on form. Compilation is mathematical proof of correctness.
 
+### 3. Śūnyatā & Zero-Cost Abstraction — Vacuum & Marvelous Existence
+The highest emptiness (Śūnyatā) gives birth to marvelous form. Grand, elegant abstractions (generics, iterators, macros) compile down to pure machine code with **zero runtime cost**. Upper architecture is sacred and vast; the silicon runs with no residual burden.
+
+## Current Implementation
+
+| Module       | Anchor / Loop              | Status      |
+|--------------|----------------------------|-------------|
+| `law`        | Zhanying · Karma & RAII    | ✅ Core     |
+| `vision`     | Dayan · Exhaustive Match   | ✅ Core     |
+| `essence`    | Trait & Representation     | ✅ Core     |
+| `sunyata`    | Zero-Cost Abstraction      | ✅ Core     |
+| `mantra`     | Sanskrit-Rust Macro PoC    | ✅ Phase 1  |
+
 ## Roadmap
 
 ### Phase 1 — Sanskrit-Rust Compiler Engine (PoC)
-Map Pāṇinian phonology and grammar rules into Rust macros and type constraints.
+Map Pāṇinian phonology and grammar rules into Rust macros and type constraints.  
+→ *First mantra macros already live in `mantra` module.*
 
 ### Phase 2 — Sanskritization of Existing Codebases
 - Eliminate all compromising `.clone()`
 - Replace every `if let` / `unwrap()` with exhaustive `match`
 - Embody Dayan’s vision in every control flow
 
-## Status
+## Build & Run
 
-Repository bootstrapped. Core philosophy committed. Implementation begins.
+```bash
+cargo test
+cargo run
+```
 
 ---
 
