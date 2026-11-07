@@ -47,11 +47,6 @@ fn main() {
 
     // ── Loop 2: Essence & Exhaustive Vision ───────────────────────
     println!("[Loop 2] Essence (Nāmarūpa) + Exhaustive Match");
-    let forms: [Form<Box<dyn Essence>>; 2] = [
-        // Note: for simplicity we use the concrete types directly below
-        // This block shows the trait object path is possible but we prefer static.
-    ];
-    let _ = forms; // suppress unused
 
     let om = Form::new(Om);
     let moksha = Form::new(Moksha);
