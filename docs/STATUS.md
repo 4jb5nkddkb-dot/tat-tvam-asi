@@ -1,32 +1,29 @@
 # Project Status Snapshot
 
-**Version**: **0.2.0**  
-**Branch**: main  
-**Released**: 2026-11-07
+**Version**: **0.2.0** (+ CLI productization on main)  
+**Branch**: main
 
-## 0.2.0 baseline
+## CLI
 
-| Layer | Contents |
-|-------|----------|
-| Type-state | `TypedProcess`, `Cosmic`, `TypedResource` |
-| Practical APIs | `config`, `command` |
-| Examples | 4 runnable demos |
-| Bench | `sacred_map` (Criterion) |
-| CI | fmt + test + clippy + no_std jobs |
-| Docs | VISION / STYLE_GUIDE / ARCHITECTURE / CHANGELOG |
+| Command | Role |
+|---------|------|
+| `tat-tvam-asi config <file\|->` | Owned config parse |
+| `tat-tvam-asi run <script\|->` | Command script runner |
+| `tat-tvam-asi cmd <...>` | One-shot command |
+| `tat-tvam-asi demo` | Philosophical demo |
 
-## Install / use
+Exit codes: `0` ok · `1` usage · `2` config · `3` command/script
 
-```toml
-# Cargo.toml (git dependency until crates.io publish)
-tat-tvam-asi = { git = "https://github.com/4jb5nkddkb-dot/tat-tvam-asi", tag = "v0.2.0" }
-```
+## Core (unchanged from 0.2.0 tag)
+
+- Type-state: `TypedProcess`, `Cosmic`, `TypedResource`
+- Library: `config`, `command`
+- CI / bench / docs
 
 ```bash
+cargo run -- help
+cargo run -- cmd PING
 cargo test
-cargo bench --bench sacred_map
 ```
-
-See [CHANGELOG.md](../CHANGELOG.md) for the full delta from 0.1.0.
 
 Tat Tvam Asi.
