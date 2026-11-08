@@ -214,10 +214,7 @@ pub fn run_typed_pipeline_owned<I, O, F>(id: u64, input: I, f: F) -> (TypedProce
 where
     F: FnOnce(&I) -> O,
 {
-    let p = TypedProcess::new(id, input)
-        .advance()
-        .advance()
-        .advance();
+    let p = TypedProcess::new(id, input).advance().advance().advance();
     p.execute_finish(f)
 }
 
