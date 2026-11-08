@@ -1,6 +1,6 @@
 # Project Status Snapshot
 
-**Version**: **0.2.0** (+ CLI productization on main)  
+**Version**: **0.2.1**  
 **Branch**: main
 
 ## CLI
@@ -14,7 +14,7 @@
 
 Exit codes: `0` ok · `1` usage · `2` config · `3` command/script
 
-## Core (unchanged from 0.2.0 tag)
+## Core (from 0.2.1)
 
 - Type-state: `TypedProcess`, `Cosmic`, `TypedResource`
 - Library: `config`, `command`
