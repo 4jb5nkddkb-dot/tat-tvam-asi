@@ -20,9 +20,7 @@ use std::io::{self, Read};
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-use tat_tvam_asi::{
-    parse_command, parse_config, ConfigError, Mode, Response, Store,
-};
+use tat_tvam_asi::{parse_command, parse_config, ConfigError, Mode, Response, Store};
 
 fn main() -> ExitCode {
     let mut args: Vec<String> = env::args().skip(1).collect();
@@ -100,7 +98,6 @@ fn split_store_flag(args: Vec<String>) -> (Option<PathBuf>, Vec<String>) {
                 i += 2;
             } else {
                 eprintln!("error: --store requires a path");
-                // leave rest empty-ish; caller will fail usage if needed
                 i += 1;
             }
         } else if let Some(path) = args[i].strip_prefix("--store=") {
