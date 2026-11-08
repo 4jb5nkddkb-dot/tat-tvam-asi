@@ -303,13 +303,15 @@ pub mod mantra {
 
     pub fn classify(symbol: char) -> Classification {
         match symbol {
-            'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => Classification {
-                class: Svara::NAME,
-                sthana: None,
-                prayatna: Prayatna::Svara,
-                ghosa: None,
-                prana: None,
-            },
+            'a' | 'ā' | 'i' | 'ī' | 'u' | 'ū' | 'e' | 'o' | 'ṛ' | 'ṝ' | 'ḷ' => {
+                Classification {
+                    class: Svara::NAME,
+                    sthana: None,
+                    prayatna: Prayatna::Svara,
+                    ghosa: None,
+                    prana: None,
+                }
+            }
             'k' => Classification {
                 class: Vyanjana::NAME,
                 sthana: Some(Sthana::Kantha),
@@ -388,9 +390,7 @@ pub use mantra::{
 };
 pub use process::{phase_to_state, Phase, SacredProcess};
 pub use sunyata::{PhantomEssence, SacredIterator, SacredMap};
-pub use typed_process::{
-    run_typed_pipeline, run_typed_pipeline_owned, PhaseState, TypedProcess,
-};
+pub use typed_process::{run_typed_pipeline, run_typed_pipeline_owned, PhaseState, TypedProcess};
 pub use typed_vision::{run_cosmic_cycle, Cosmic, CosmicState};
 pub use vision::State;
 
