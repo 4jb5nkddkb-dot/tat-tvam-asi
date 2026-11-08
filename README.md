@@ -8,7 +8,28 @@
 
 [VISION](docs/VISION.md) · [STYLE_GUIDE](docs/STYLE_GUIDE.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [STATUS](docs/STATUS.md) · [CHANGELOG](CHANGELOG.md)
 
-## Practical library APIs (`std`)
+## CLI (product front door)
+
+```bash
+cargo run -- help
+cargo run -- config path/to/app.conf
+cargo run -- cmd PING
+cargo run -- cmd SET greeting namaste
+cargo run -- run path/to/script.txt
+cargo run -- demo
+```
+
+| Subcommand | Purpose | Exit on failure |
+|------------|---------|-----------------|
+| `config <file\|->` | Parse owned config, print `host/port/mode` | `2` |
+| `run <script\|->` | Execute command script (shared `Store`) | `3` |
+| `cmd <...>` | One-shot command on a fresh store | `3` |
+| `demo` | Three closed-loop demonstration | — |
+| `help` | Usage | — |
+
+Exit codes: `0` ok · `1` usage · `2` config · `3` command/script
+
+## Library APIs (`std`)
 
 | Module | Entry points |
 |--------|----------------|
@@ -23,25 +44,18 @@
 | `Cosmic` | cosmic cycle order |
 | `TypedResource` | consume-once resource (alloc) |
 
-## Use as dependency
+## Dependency
 
 ```toml
 tat-tvam-asi = { git = "https://github.com/4jb5nkddkb-dot/tat-tvam-asi", tag = "v0.2.0" }
 ```
 
-## Build / test / bench
+## Test / bench
 
 ```bash
 cargo test
-cargo run
-cargo run --example config_loop
-cargo run --example command_pipeline
-cargo run --example closed_loops
-cargo run --example phoneme_classify
 cargo bench --bench sacred_map
-
 cargo check --no-default-features --lib
-cargo check --no-default-features --features alloc --lib
 ```
 
-**Chief Architect**: Zhanying Jia / Dayan Jia · **License**: MIT · **Release**: [v0.2.0](https://github.com/4jb5nkddkb-dot/tat-tvam-asi/releases/tag/v0.2.0)
+**Chief Architect**: Zhanying Jia / Dayan Jia · **License**: MIT
