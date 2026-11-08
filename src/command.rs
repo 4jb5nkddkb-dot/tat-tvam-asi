@@ -179,7 +179,7 @@ mod tests {
             }
             out
         };
-        let s2 = Store::from_kv_text(&text);
+        let mut s2 = Store::from_kv_text(&text);
         assert_eq!(s2.len(), 2);
         assert_eq!(
             s2.handle(Command::Get { key: "b".into() }),
