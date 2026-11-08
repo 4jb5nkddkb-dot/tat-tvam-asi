@@ -100,7 +100,7 @@ mod tests {
             }),
             Response::Ok
         ));
-        assert_eq(
+        assert_eq!(
             s.handle(Command::Get { key: "k".into() }),
             Response::Value(Some("v".into())),
         );
