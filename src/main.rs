@@ -3,8 +3,8 @@
 //! ```text
 //! tat-tvam-asi help
 //! tat-tvam-asi config <file|->
-//! tat-tvam-asi run <script|->
-//! tat-tvam-asi cmd <PING|GET k|SET k v|STATS>
+//! tat-tvam-asi run [--store <path>] <script|->
+//! tat-tvam-asi cmd [--store <path>] <PING|GET k|SET k v|STATS>
 //! tat-tvam-asi demo
 //! ```
 //!
@@ -17,6 +17,7 @@
 use std::env;
 use std::fs;
 use std::io::{self, Read};
+use std::path::PathBuf;
 use std::process::ExitCode;
 
 use tat_tvam_asi::{
@@ -24,23 +25,21 @@ use tat_tvam_asi::{
 };
 
 fn main() -> ExitCode {
-    let mut args = env::args().skip(1);
-    let cmd = match args.next() {
-        Some(c) => c,
-        None => {
-            print_usage();
-            return ExitCode::from(1);
-        }
-    };
+    let mut args: Vec<String> = env::args().skip(1).collect();
+    if args.is_empty() {
+        print_usage();
+        return ExitCode::from(1);
+    }
 
+    let cmd = args.remove(0);
     match cmd.as_str() {
         "help" | "-h" | "--help" => {
             print_usage();
             ExitCode::SUCCESS
         }
         "config" => {
-            let path = match args.next() {
-                Some(p) => p,
+            let path = match args.first() {
+                Some(p) => p.clone(),
                 None => {
                     eprintln!("error: config requires <file|->");
                     return ExitCode::from(1);
@@ -52,25 +51,27 @@ fn main() -> ExitCode {
             }
         }
         "run" => {
-            let path = match args.next() {
-                Some(p) => p,
+            let (store_path, rest) = split_store_flag(args);
+            let path = match rest.first() {
+                Some(p) => p.clone(),
                 None => {
                     eprintln!("error: run requires <script|->");
                     return ExitCode::from(1);
                 }
             };
-            match run_script(&path) {
+            match run_script(&path, store_path.as_deref()) {
                 Ok(()) => ExitCode::SUCCESS,
                 Err(code) => ExitCode::from(code),
             }
         }
         "cmd" => {
-            let line = args.collect::<Vec<_>>().join(" ");
+            let (store_path, rest) = split_store_flag(args);
+            let line = rest.join(" ");
             if line.trim().is_empty() {
                 eprintln!("error: cmd requires a command line, e.g. PING or GET key");
                 return ExitCode::from(1);
             }
-            match run_one_cmd(&line) {
+            match run_one_cmd(&line, store_path.as_deref()) {
                 Ok(()) => ExitCode::SUCCESS,
                 Err(code) => ExitCode::from(code),
             }
@@ -87,6 +88,32 @@ fn main() -> ExitCode {
     }
 }
 
+/// Extract optional `--store <path>` from argv; returns (store, remaining).
+fn split_store_flag(args: Vec<String>) -> (Option<PathBuf>, Vec<String>) {
+    let mut store = None;
+    let mut rest = Vec::new();
+    let mut i = 0;
+    while i < args.len() {
+        if args[i] == "--store" {
+            if i + 1 < args.len() {
+                store = Some(PathBuf::from(&args[i + 1]));
+                i += 2;
+            } else {
+                eprintln!("error: --store requires a path");
+                // leave rest empty-ish; caller will fail usage if needed
+                i += 1;
+            }
+        } else if let Some(path) = args[i].strip_prefix("--store=") {
+            store = Some(PathBuf::from(path));
+            i += 1;
+        } else {
+            rest.push(args[i].clone());
+            i += 1;
+        }
+    }
+    (store, rest)
+}
+
 fn print_usage() {
     eprintln!(
         "\
@@ -94,10 +121,13 @@ Tat Tvam Asi CLI (v{})
 
 Usage:
   tat-tvam-asi help
-  tat-tvam-asi config <file|->     Parse and print owned config
-  tat-tvam-asi run <script|->      Execute command script (one cmd per line)
-  tat-tvam-asi cmd <command...>    Run a single command against a fresh store
-  tat-tvam-asi demo                Philosophical three-loop demonstration
+  tat-tvam-asi config <file|->
+  tat-tvam-asi run  [--store <path>] <script|->
+  tat-tvam-asi cmd  [--store <path>] <command...>
+  tat-tvam-asi demo
+
+Options:
+  --store <path>   Persist key=value store across cmd/run invocations
 
 Exit codes:
   0  success
@@ -106,11 +136,10 @@ Exit codes:
   3  command / script error
 
 Examples:
-  tat-tvam-asi config ./app.conf
-  echo 'host=127.0.0.1\nport=8080\nmode=dev' | tat-tvam-asi config -
-  tat-tvam-asi cmd PING
-  tat-tvam-asi cmd SET greeting namaste
-  tat-tvam-asi run ./script.txt
+  tat-tvam-asi config ./examples/app.conf
+  tat-tvam-asi cmd --store ./data.kv SET greeting namaste
+  tat-tvam-asi cmd --store ./data.kv GET greeting
+  tat-tvam-asi run --store ./data.kv ./examples/script.txt
 ",
         env!("CARGO_PKG_VERSION")
     );
@@ -130,6 +159,26 @@ fn read_input(path: &str) -> Result<String, u8> {
             1u8
         })
     }
+}
+
+fn open_store(path: Option<&std::path::Path>) -> Result<Store, u8> {
+    match path {
+        None => Ok(Store::new()),
+        Some(p) => Store::load_file(p).map_err(|e| {
+            eprintln!("error: load store {}: {e}", p.display());
+            3u8
+        }),
+    }
+}
+
+fn save_store(store: &Store, path: Option<&std::path::Path>) -> Result<(), u8> {
+    if let Some(p) = path {
+        store.save_file(p).map_err(|e| {
+            eprintln!("error: save store {}: {e}", p.display());
+            3u8
+        })?;
+    }
+    Ok(())
 }
 
 fn run_config(path: &str) -> Result<(), u8> {
@@ -172,24 +221,24 @@ fn format_response(resp: &Response) -> String {
     }
 }
 
-fn run_one_cmd(line: &str) -> Result<(), u8> {
+fn run_one_cmd(line: &str, store_path: Option<&std::path::Path>) -> Result<(), u8> {
     let cmd = parse_command(line).map_err(|e| {
         eprintln!("command error: {e}");
         3u8
     })?;
-    let mut store = Store::new();
+    let mut store = open_store(store_path)?;
     let resp = store.handle(cmd);
     println!("{}", format_response(&resp));
     if matches!(resp, Response::Error(_)) {
-        Err(3)
-    } else {
-        Ok(())
+        return Err(3);
     }
+    save_store(&store, store_path)?;
+    Ok(())
 }
 
-fn run_script(path: &str) -> Result<(), u8> {
+fn run_script(path: &str, store_path: Option<&std::path::Path>) -> Result<(), u8> {
     let text = read_input(path)?;
-    let mut store = Store::new();
+    let mut store = open_store(store_path)?;
     let mut failed = false;
 
     for (i, line) in text.lines().enumerate() {
@@ -212,6 +261,7 @@ fn run_script(path: &str) -> Result<(), u8> {
         }
     }
 
+    save_store(&store, store_path)?;
     if failed {
         Err(3)
     } else {
