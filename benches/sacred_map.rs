@@ -12,7 +12,7 @@ fn pipeline_std(data: &[u32]) -> u64 {
         .map(|x| x.wrapping_mul(3))
         .map(|x| x.wrapping_add(1))
         .map(|x| x.wrapping_mul(x))
-        .fold(0u64, |acc, x| acc.wrapping_add(*x as u64))
+        .fold(0u64, |acc, x| acc.wrapping_add(x as u64))
 }
 
 fn pipeline_sacred(data: &[u32]) -> u64 {
@@ -20,7 +20,7 @@ fn pipeline_sacred(data: &[u32]) -> u64 {
         .sacred_map(|x| x.wrapping_mul(3))
         .sacred_map(|x| x.wrapping_add(1))
         .sacred_map(|x| x.wrapping_mul(x))
-        .fold(0u64, |acc, x| acc.wrapping_add(*x as u64))
+        .fold(0u64, |acc, x| acc.wrapping_add(x as u64))
 }
 
 fn bench_pipelines(c: &mut Criterion) {
