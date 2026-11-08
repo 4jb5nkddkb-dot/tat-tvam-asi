@@ -1,0 +1,5 @@
+# sample command script
+PING
+SET greeting namaste
+GET greeting
+STATS
