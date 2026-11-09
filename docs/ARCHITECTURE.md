@@ -1,17 +1,17 @@
-# Architecture Overview — Project Tat Tvam Asi
+# Architecture Overview
 
 ## Module Map
 
 ```
 tat_tvam_asi
-├── law            → Karma & RAII (alloc)
+├── law            → Ownership / RAII (alloc)
 ├── typed_law      → Type-state resource lifecycle (alloc)
-├── vision         → Runtime cosmic State enum
-├── typed_vision   → Type-state cosmic path
-├── essence        → Trait & Form / Nāmarūpa (alloc)
+├── vision         → Runtime State enum
+├── typed_vision   → Type-state path
+├── essence        → Trait & Form (alloc)
 ├── sunyata        → Zero-cost adapters & markers
-├── mantra         → Sanskrit-Rust PoC (macros + phonology)
-├── process        → Runtime-phase SacredProcess
+├── mantra         → Phonology / type markers (macros)
+├── process        → Runtime-phase process
 └── typed_process  → Type-state process pipeline
 ```
 
@@ -25,10 +25,10 @@ tat_tvam_asi
 
 ## Design Principles
 
-1. **No residual karma** — ownership is explicit; consume/move preferred over clone.
-2. **No unknown states** — closed enums; type-state where sequence must be forced.
+1. **Visible lifetime** — ownership is explicit; prefer move over clone.
+2. **Named states** — closed enums; type-state where sequence must be forced.
 3. **Zero-cost where it matters** — `PhantomData`, marker traits, iterator adapters.
-4. **Compile-time over runtime** — illegal transitions should not compile.
+4. **Compile-time over runtime** — illegal transitions should not compile when order is a logic requirement.
 
 ## Type-state surfaces
 
@@ -40,12 +40,12 @@ tat_tvam_asi
 
 Runtime twins (`Phase`, `State`, `Resource`) remain for logging and simple demos.
 
-## SacredProcess vs TypedProcess
+## Process variants
 
-- `SacredProcess` — dynamic phase field; good for demos and step loops.
-- `TypedProcess` — phase in the type; illegal order is a compile error.
+- Runtime process — dynamic phase field; good for demos and step loops.
+- Typed process — phase in the type; illegal order is a compile error.
 
-## Phase 1 (Mantra)
+## Mantra (phonology sketch)
 
 - Macros: `exhaustive!`, `declare_essence!` (alloc)
 - Classes: `Svara`, `Vyanjana`, `Antastha`, `Usman`
