@@ -1,6 +1,7 @@
-//! Project Tat Tvam Asi — Core Library
+//! tat-tvam-asi — ownership, exhaustive matching, zero-cost structure
 //!
-//! 彼即汝. The silicon sacred word.
+//! Experimental mappings between Rust constraints and Madhyamaka-style
+//! observations (no inherent nature, dependent arising). Not a doctrine.
 //!
 //! Features:
 //! - `std` (default): full library + binary + `config` + `command`
