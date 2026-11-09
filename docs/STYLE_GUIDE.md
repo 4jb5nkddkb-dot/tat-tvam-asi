@@ -1,17 +1,17 @@
-# Style Guide — Writing under the Dual Anchors
+# Style Guide
 
-This document turns the philosophy of Project Tat Tvam Asi into concrete coding rules.
+规则服务于可检验的约束，而非任何个人或教义中心。
 
-## 1. The Law (贾战英 / Zhanying)
+## 1. Ownership（缘起可见）
 
-**Principle**: Everything that is born must have a clear owner and a determined end.
+**原则**：有生则有所属与所终；尽量不假设隐式常住。
 
 ### Rules
 
-- Prefer **ownership transfer** over `.clone()`.
+- Prefer ownership transfer over `.clone()`.
 - Avoid shared mutable state (`Rc<RefCell<_>>`, `Arc<Mutex<_>>`) unless the domain truly requires it.
 - Make `Drop` meaningful when a resource holds external handles.
-- Do not leave “temporary” values that outlive their logical scope.
+- Do not leave temporary values that outlive their logical scope.
 
 ### Smell
 
@@ -24,9 +24,9 @@ process(data2);
 process(data); // move
 ```
 
-## 2. The Vision (贾大眼 / Dayan)
+## 2. Exhaustive naming（不留未名）
 
-**Principle**: Every state and every branch must be named. No hidden unknowns.
+**原则**：状态与分支尽量被命名；静默忽略也是一种立场。
 
 ### Rules
 
@@ -50,9 +50,9 @@ match maybe {
 }
 ```
 
-## 3. Śūnyatā (Zero-Cost)
+## 3. Zero-cost where it matters（形式不必有自性负担）
 
-**Principle**: High-level structure must not impose runtime tax.
+**原则**：高层结构可以存在，但不必然在热路径留下固定代价。
 
 ### Rules
 
@@ -60,39 +60,26 @@ match maybe {
 - Use zero-sized types and `PhantomData` for type-level information.
 - Iterator adapters and small newtypes should be `#[inline]`-friendly and allocation-free in the hot path.
 
-## 4. Type-state vs runtime state — when to use which
+## 4. Type-state vs runtime state
 
 | Need | Prefer | Why |
 |------|--------|-----|
 | Sequence must be impossible to violate | **Type-state** (`TypedProcess`, `Cosmic`, `TypedResource`) | Wrong order fails at compile time |
 | Logging, serialization, dynamic step loops | **Runtime enum** (`Phase`, `State`, `SacredProcess`) | Values can be stored, printed, matched in data |
-| One-shot owned payload with clear end | `TypedResource` / `Resource::into_data` | Consumption is visible in the type or signature |
-| Demo / teaching loop with `while !complete` | `SacredProcess` | Simple to step and print |
+| One-shot owned payload with clear end | `TypedResource` / `Resource::into_data` | Consumption is visible |
+| Demo / teaching loop | `SacredProcess` | Simple to step and print |
 
 **Rule of thumb**: if an illegal transition would be a logic bug, encode it in the type system. If you only need observability, keep the runtime enum.
 
-```rust
-// Type-state: cannot call execute before reaching Execute phase
-let p = TypedProcess::new(1, input).advance().advance().advance();
-let (p, out) = p.execute(|x| work(x));
-let _done = p.advance();
-
-// Runtime: flexible stepping, phase carried as data
-let mut p = SacredProcess::new(1, input);
-while !p.is_complete() {
-    p.step(|x, phase| work(x, phase));
-}
-```
-
-## 5. Recommended Patterns from this Crate
+## 5. Patterns in this crate
 
 | Pattern | Module | Use when |
 |---------|--------|----------|
 | `Resource` | `law` | Simple owned bytes / handles |
-| `TypedResource` | `typed_law` | Same, with type-state “alive until consume” |
-| `Essence` + `Form` | `essence` | Name / form separation |
-| `State` | `vision` | Runtime cosmic state machine |
-| `Cosmic<S>` | `typed_vision` | Cosmic path forced at compile time |
+| `TypedResource` | `typed_law` | Consume-once lifecycle |
+| `Essence` + `Form` | `essence` | Name / form separation (provisional) |
+| `State` | `vision` | Runtime state machine |
+| `Cosmic<S>` | `typed_vision` | Compile-time path |
 | `SacredProcess` | `process` | Dynamic observe→act→update loop |
 | `TypedProcess` | `typed_process` | Same sequence, compile-time order |
 | `SacredMap` | `sunyata` | Zero-cost transformation pipelines |
