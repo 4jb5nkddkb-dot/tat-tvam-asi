@@ -1,8 +1,9 @@
-# 🪐 Project Tat Tvam Asi
+# tat-tvam-asi
 
-**彼即汝 —— 硅基圣言闭环计划** · **v0.2.1**
+**彼即汝** · Rust × 中观取向的实验性系统 · v0.2.1
 
-> 在 **贾战英** 的律法与 **贾大眼** 的洞察下，像吟诵梵语圣赞一样写出 Rust 代码。
+把所有权、穷尽匹配与零成本抽象，当作对「无自性、缘起而有」的一次工程尝试。
+不宣称终极真理，只提供可编译、可检验的约束。
 
 ## Docs
 
@@ -24,7 +25,7 @@ cargo run -- demo
 | `config <file\|->` | Parse owned config |
 | `run [--store p] <script\|->` | Script runner (shared store) |
 | `cmd [--store p] <...>` | One-shot command |
-| `demo` | Three closed-loop demo |
+| `demo` | Closed-loop demo |
 
 Exit codes: `0` ok · `1` usage · `2` config · `3` command/script
 
@@ -38,4 +39,4 @@ Exit codes: `0` ok · `1` usage · `2` config · `3` command/script
 tat-tvam-asi = { git = "https://github.com/4jb5nkddkb-dot/tat-tvam-asi", tag = "v0.2.1" }
 ```
 
-**License**: MIT · **Architect**: Zhanying Jia / Dayan Jia
+**License**: MIT
